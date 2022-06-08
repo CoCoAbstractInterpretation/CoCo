@@ -1,0 +1,10 @@
+version: '3'
+services:
+  opgen:
+    build: .
+    working_dir: /app
+    ports:
+      - "10086:86"
+    volumes:
+      - .:/app
+

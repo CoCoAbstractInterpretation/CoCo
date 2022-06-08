@@ -1,0 +1,50 @@
+
+.gc-print-status{
+    width: 20px;
+    height: 20px;
+    margin: 20px;
+    border-radius: 17px;
+    background-color: #53ff1a;
+    border: 1px solid;
+}
+
+.gc-print-log {
+    background-color: black;
+    color: white;
+    width: 500px;
+    height: 300px;
+    overflow: auto;
+    
+    border: 3px solid;
+    border-color: #f1f1f1;
+}
+
+.gc-print-log-tela{
+	box-shadow: 2px 2px 23px 1px black;
+	width: 506px;
+	display:none;
+}
+
+.gc-print-log-tela2{
+	box-shadow: 2px 2px 23px 1px black;
+	width: 506px;
+}
+
+.gc-print-log-topo{
+	background-color: f1f1f1;
+	width: 506px;
+	height: 20px;
+}
+
+.gc-print-fechar-log{
+	float: right;
+	text-align: center;
+	width: 20px;
+	cursor: pointer;
+}
+
+.gc-print-clear-log{
+	text-align: center;
+	width: 20px;
+	cursor: pointer;
+}

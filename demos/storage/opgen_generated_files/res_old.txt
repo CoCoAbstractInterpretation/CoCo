@@ -1,0 +1,25 @@
+(['14243', '14270', '14272', '14286'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/ackpndpapmikcoklmcbigfgkiemohddk with chrome_storage_local_set_sink
+from cs_window_eventListener_message to chrome_storage_local_set_sink
+==========================
+$FilePath$demos/ackpndpapmikcoklmcbigfgkiemohddk/opgen_generated_files/cs_0.js
+Line 533	window.addEventListener('message', function (event){
+	event
+$FilePath$demos/ackpndpapmikcoklmcbigfgkiemohddk/opgen_generated_files/cs_0.js
+Line 536	    if(event.data && event.data.params && event.data.params.action && event.data['podarkoz'] === 1){
+	event.data
+$FilePath$demos/ackpndpapmikcoklmcbigfgkiemohddk/opgen_generated_files/cs_0.js
+Line 536	    if(event.data && event.data.params && event.data.params.action && event.data['podarkoz'] === 1){
+	event.data.params
+$FilePath$demos/ackpndpapmikcoklmcbigfgkiemohddk/opgen_generated_files/cs_0.js
+Line 540	            objectData[event.data.params.key] = event.data.params.value;
+	event.data.params.value
+
+(['14362'], 'storage_local_get_source')
+~~~tainted detected!~~~in extension: demos/ackpndpapmikcoklmcbigfgkiemohddk with window_postMessage_sink
+from storage_local_get_source to window_postMessage_sink
+==========================
+$FilePath$demos/ackpndpapmikcoklmcbigfgkiemohddk/opgen_generated_files/cs_0.js
+Line 436	    var storage_local_get_source = {'key':'value'};
+	
+

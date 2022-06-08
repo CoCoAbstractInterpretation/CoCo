@@ -1,0 +1,32 @@
+{
+    "extension": "/Users/jianjia/Documents/tmp/EOPG/run_JSCPG_merge/demos/test",
+    "benchmarks": {},
+    "cs": {
+        "direct_dangers": {
+            "danger1": {
+                "danger": "XMLHttpRequest.open",
+                "value": "{'XMLHttpRequest()': {}, 'onerror': <pdg_js.node.FunctionExpression object at 0x7f8e23827f10>}.open(GET, e.data.xhr.url)",
+                "sink-param1": "GET",
+                "sink-param2": "e.data.xhr.url",
+                "line": "17 - 17",
+                "filename": "/Users/jianjia/Documents/tmp/EOPG/run_JSCPG_merge/demos/test/content_scripts.js",
+                "dataflow": true,
+                "param_id0": {
+                    "received_from_wa_1": {
+                        "wa": "e",
+                        "line": "6 - 6",
+                        "filename": "/Users/jianjia/Documents/tmp/EOPG/run_JSCPG_merge/demos/test/content_scripts.js",
+                        "where": "e"
+                    }
+                }
+            }
+        },
+        "indirect_dangers": {},
+        "exfiltration_dangers": {}
+    },
+    "bp": {
+        "direct_dangers": {},
+        "indirect_dangers": {},
+        "exfiltration_dangers": {}
+    }
+}

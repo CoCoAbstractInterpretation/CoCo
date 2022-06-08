@@ -1,0 +1,4 @@
+{
+    // "presets": ["es2015", "stage-0"],
+    "plugins": ["./src/plugins/others/babel-custom-plugins/babel-plugin-myPlugin.js"]
+}

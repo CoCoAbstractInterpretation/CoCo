@@ -1,0 +1,45 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+
+	"name": "GC bridge",
+	"minimum_chrome_version": "23",
+	"manifest_version": 2,
+	"version": "4.0",
+	"description": "GC - Comunicação com GC Devices",
+	"icons": {
+		"48": "icon/48.png",
+		"128": "icon/128.png"
+	},
+    "permissions": [ 
+		"tabs",
+		"declarativeContent",
+		"management",
+		"notifications",
+		"http://*/*",
+		"https://*/*",
+		"storage"
+    ],
+
+	"background": {
+		  "scripts": [ "jquery.js","background.js" ]
+	},
+    "content_scripts": [ {
+        "js": [ "jquery.js", "GC_bridge.js" ],
+        "css": [ "GC_bridge.css" ],
+        "matches": [ "https://*.delfa.com.br/*","http://*.delfa.com.br/*","http://localhost:8080/*","http://localhost:8091/*","http://localhost:8090/*"]
+    } ],
+	"externally_connectable": {
+		"ids": ["*"],
+		"matches": ["https://*.delfa.com.br/*","http://*.delfa.com.br/*","http://localhost:8080/*","http://localhost:8091/*","http://localhost:8090/*"]
+	},
+	"browser_action": {
+		"default_icon": { 
+            "19" : "icon/19.png",
+            "38" : "icon/38.png"
+        },
+		"default_title": "GC bridge",
+		"default_popup": "popup.html"
+	},
+	"options_page": "options.html"
+}

@@ -1,0 +1,1 @@
+var stationName=["GANDHINAGAR CAP - GNC","GOVINDGARH MALK - GND", "GAURIGANJ - GNG"];

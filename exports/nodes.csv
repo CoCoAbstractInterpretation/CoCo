@@ -1,0 +1,396 @@
+id:ID	labels:label	type	flags:string[]	lineno:int	code	childnum:int	funcid:int	classname	namespace	endlineno:int	name	doccomment	export	tainted
+0	Filesystem	Directory									demos/test/opgen_generated_files		True	
+1	Filesystem	File									demos/test/opgen_generated_files/bg.js		True	
+2	AST	AST_TOPLEVEL	TOPLEVEL_FILE	70					70::70:	70	demos/test/opgen_generated_files/bg.js		True	
+3	Artificial	CFG_FUNC_ENTRY					2				demos/test/opgen_generated_files/bg.js		True	
+4	Artificial	CFG_FUNC_EXIT					2				demos/test/opgen_generated_files/bg.js		True	
+5	AST	AST_STMT_LIST		70		0	2		70::70:	70			True	
+6	Filesystem	File									demos/test/opgen_generated_files/cs_0.js		True	
+7	AST	AST_TOPLEVEL	TOPLEVEL_FILE	65					65::76:3	76	demos/test/opgen_generated_files/cs_0.js		True	
+8	Artificial	CFG_FUNC_ENTRY					7				demos/test/opgen_generated_files/cs_0.js		True	
+9	Artificial	CFG_FUNC_EXIT					7				demos/test/opgen_generated_files/cs_0.js		True	
+10	AST	AST_STMT_LIST		65		0	7		65::76:3	76			True	
+11	AST	AST_ASSIGN		65	options = 3	0	7		65:4:65:15	65		"original file:crx_headers_easy/jquery_header.js\noriginal file:crx_headers_easy/cs_header.js\noriginal file:/Users/jia/Desktop/tmp/EOPG/run_JSCPG_merge/demos/test/test_content.js\nfunction openEngine(selectionText, newPos = false) {\nchrome.runtime.sendMessage({type: 'getToken'}, function(response) {\nconsole.log('' + JSON.stringify(response));\nif(response && response.token){\nlet queryStr = encodeURIComponent(selectionText);\ndebug_sink(\"search\")\nchrome.runtime.sendMessage({type: 'search',wd:queryStr}, function(res) {\nconsole.log(res)\n});\n}\n});\n}\nwindow.addEventListener(\"message\", function(event) {\nconsole.log(event)\nif(event.data.type === 'search') {\nif(self == top)\n{\nopenEngine(event.data.wd,false)\n}\n}\n}, false);\n// window.addEventListener(\"message\", function(event) {\n//     console.log(event)\n//     if(event.datajianjia.typejianjia === 'search') {\n//         var tmp_body = 'token='+'&wd='+event.datajianjia.wd\n//         if(self == top)\n//         {\n//             fetch(options.api_host+'/api/searchApi',{\n//     "	True	
+12	AST	AST_VAR	JS_DECL_LET	65		0	7		65:4:65:11	65			True	
+13	AST	string		65	options	0	7		65:4:65:11	65	options		True	
+14	AST	integer		65	3	1	7		65:14:65:15	65			True	
+15	AST	AST_ASSIGN		67	test_function = function(extensionId, msg){    debug_sink(\"extensionId\", arguments[1]);    debug_sink(\"msg\", msg);    debug_sink(\"options\", arguments[2]);    debug_sink(\"rspCallback\", arguments[3]);}	1	7		67::72:1	72			True	
+16	AST	AST_VAR		67		0	7		67::67:13	67			True	
+17	AST	string		67	test_function	0	7		67::67:13	67	test_function		True	
+18	AST	AST_CLOSURE		67		1	7		67:16:72:1	72			True	
+19	Artificial	CFG_FUNC_ENTRY					18						True	
+20	Artificial	CFG_FUNC_EXIT					18						True	
+21	AST	string		67	{anon}	0	18		67::67:				True	
+22	AST	NULL		67		1	18		67::67:				True	
+23	AST	AST_PARAM_LIST		67	extensionId, msg	2	18		67:16:72:1	72			True	
+24	AST	AST_PARAM		67	extensionId	0	18		67::67:				True	
+25	AST	NULL		67	any	0	18		67::67:				True	
+26	AST	string		67	extensionId	1	18		67:25:67:36	67			True	
+27	AST	NULL		67	any	2	18		67::67:				True	
+28	AST	AST_PARAM		67	msg	1	18		67::67:				True	
+29	AST	NULL		67	any	0	18		67::67:				True	
+30	AST	string		67	msg	1	18		67:38:67:41	67			True	
+31	AST	NULL		67	any	2	18		67::67:				True	
+32	AST	NULL		67		3	18		67::67:				True	
+33	AST	AST_STMT_LIST		67		4	18		67:42:72:1	72			True	
+34	AST	AST_CALL		68	debug_sink(\"extensionId\", arguments[1])	0	18		68:4:68:43	68			True	
+35	AST	AST_NAME	NAME_NOT_FQ	68		0	18		68:4:68:43	68			True	
+36	AST	string		68	debug_sink	0	18		68:4:68:14	68			True	
+37	AST	AST_ARG_LIST		68	(\"extensionId\", arguments[1])	1	18		68:4:68:43	68			True	
+38	AST	string		68	extensionId	0	18		68:15:68:28	68			True	
+39	AST	AST_DIM		68	arguments[1]	1	18		68:30:68:42	68			True	
+40	AST	AST_VAR		68		0	18		68:30:68:39	68			True	
+41	AST	string		68	arguments	0	18		68:30:68:39	68	arguments		True	
+42	AST	integer		68	1	1	18		68:40:68:41	68			True	
+43	AST	AST_CALL		69	debug_sink(\"msg\", msg)	1	18		69:4:69:26	69			True	
+44	AST	AST_NAME	NAME_NOT_FQ	69		0	18		69:4:69:26	69			True	
+45	AST	string		69	debug_sink	0	18		69:4:69:14	69			True	
+46	AST	AST_ARG_LIST		69	(\"msg\", msg)	1	18		69:4:69:26	69			True	
+47	AST	string		69	msg	0	18		69:15:69:20	69			True	
+48	AST	AST_VAR		69		1	18		69:22:69:25	69			True	
+49	AST	string		69	msg	0	18		69:22:69:25	69	msg		True	
+50	AST	AST_CALL		70	debug_sink(\"options\", arguments[2])	2	18		70:4:70:39	70			True	
+51	AST	AST_NAME	NAME_NOT_FQ	70		0	18		70:4:70:39	70			True	
+52	AST	string		70	debug_sink	0	18		70:4:70:14	70			True	
+53	AST	AST_ARG_LIST		70	(\"options\", arguments[2])	1	18		70:4:70:39	70			True	
+54	AST	string		70	options	0	18		70:15:70:24	70			True	
+55	AST	AST_DIM		70	arguments[2]	1	18		70:26:70:38	70			True	
+56	AST	AST_VAR		70		0	18		70:26:70:35	70			True	
+57	AST	string		70	arguments	0	18		70:26:70:35	70	arguments		True	
+58	AST	integer		70	2	1	18		70:36:70:37	70			True	
+59	AST	AST_CALL		71	debug_sink(\"rspCallback\", arguments[3])	3	18		71:4:71:43	71			True	
+60	AST	AST_NAME	NAME_NOT_FQ	71		0	18		71:4:71:43	71			True	
+61	AST	string		71	debug_sink	0	18		71:4:71:14	71			True	
+62	AST	AST_ARG_LIST		71	(\"rspCallback\", arguments[3])	1	18		71:4:71:43	71			True	
+63	AST	string		71	rspCallback	0	18		71:15:71:28	71			True	
+64	AST	AST_DIM		71	arguments[3]	1	18		71:30:71:42	71			True	
+65	AST	AST_VAR		71		0	18		71:30:71:39	71			True	
+66	AST	string		71	arguments	0	18		71:30:71:39	71	arguments		True	
+67	AST	integer		71	3	1	18		71:40:71:41	71			True	
+68	AST	NULL		67		5	18		67::67:				True	
+69	AST	NULL		67		6	18		67::67:				True	
+70	AST	AST_CALL		74	test_function({type: 'search'}, function(res) {    console.log(res)})	2	7		74::76:2	76			True	
+71	AST	AST_NAME	NAME_NOT_FQ	74		0	7		74::76:2	76			True	
+72	AST	string		74	test_function	0	7		74::74:13	74			True	
+73	AST	AST_ARG_LIST		74		1	7		74::76:2	76			True	
+74	AST	AST_ARRAY	JS_OBJECT	74		0	7		74:14:74:30	74			True	
+75	AST	AST_ARRAY_ELEM		74		0	7		74:15:74:29	74			True	
+76	AST	string		74	search	0	7		74:21:74:29	74			True	
+77	AST	string		74	type	1	7		74:15:74:19	74			True	
+78	AST	AST_CLOSURE		74		1	7		74:32:76:1	76			True	
+79	Artificial	CFG_FUNC_ENTRY					78						True	
+80	Artificial	CFG_FUNC_EXIT					78						True	
+81	AST	string		74	{anon}	0	78		74::74:				True	
+82	AST	NULL		74		1	78		74::74:				True	
+83	AST	AST_PARAM_LIST		74	res	2	78		74:32:76:1	76			True	
+84	AST	AST_PARAM		74	res	0	78		74::74:				True	
+85	AST	NULL		74	any	0	78		74::74:				True	
+86	AST	string		74	res	1	78		74:41:74:44	74			True	
+87	AST	NULL		74	any	2	78		74::74:				True	
+88	AST	NULL		74		3	78		74::74:				True	
+89	AST	AST_STMT_LIST		74		4	78		74:46:76:1	76			True	
+90	AST	AST_METHOD_CALL		75	console.log(res)	0	78		75:4:75:20	75			True	
+91	AST	AST_VAR		75		0	78		75:4:75:11	75			True	
+92	AST	string		75	console	0	78		75:4:75:11	75	console		True	
+93	AST	string		75	log	1	78		75:12:75:15	75			True	
+94	AST	AST_ARG_LIST		75	(res)	2	78		75:4:75:20	75			True	
+95	AST	AST_VAR		75		0	78		75:16:75:19	75			True	
+96	AST	string		75	res	0	78		75:16:75:19	75	res		True	
+97	AST	NULL		74		5	78		74::74:				True	
+98	AST	NULL		74		6	78		74::74:				True	
+99	Scope	BASE_SCOPE									Base		True	
+100	Name										global		True	
+101	Object	object											True	
+102	Object	function									demos/test/opgen_generated_files/bg.js		True	
+103	Name										prototype		True	
+104	Object	object											True	
+105	Name										demos/test/opgen_generated_files/bg.js		True	
+106	Name										name		True	
+107	Object	string			demos/test/opgen_generated_files/bg.js								True	
+108	Name										length		True	
+109	Object	number			38								True	
+110	Name										length		True	
+111	Object	number			0								True	
+112	Scope	FILE_SCOPE									File2:0		True	
+113	Name										window		True	
+114	Object	object											True	
+115	Name										null		True	
+116	Object	object			null								True	
+117	Object	boolean			true								True	
+118	Name										true		True	
+119	Object	boolean			false								True	
+120	Name										false		True	
+1230	Object	undefined			undefined								True	
+1231	Name										undefined		True	
+1232	Object	number			Infinity								True	
+1233	Name										Infinity		True	
+1234	Object	number			-Infinity								True	
+1235	Object	number			nan								True	
+1236	Name										NaN		True	
+1237	Artificial_AST	AST_CLOSURE											True	
+1238	Artificial_AST	string				0					RegisterFunc		True	
+1239	Artificial	CFG_FUNC_ENTRY											True	
+1240	Artificial	CFG_FUNC_EXIT											True	
+1241	Artificial_AST	AST_PARAM_LIST				1							True	
+1242	Object	function											True	
+1243	Name										prototype		True	
+1244	Object	object											True	
+1245	Name										__proto__		True	
+1246	Name										constructor		True	
+1247	Name										__proto__		True	
+1248	Name										constructor		True	
+1249	Name										RegisterFunc		True	
+1250	Artificial_AST	AST_CLOSURE											True	
+1251	Artificial_AST	string				0					TriggerEvent		True	
+1252	Artificial	CFG_FUNC_ENTRY											True	
+1253	Artificial	CFG_FUNC_EXIT											True	
+1254	Artificial_AST	AST_PARAM_LIST				1							True	
+1255	Object	function											True	
+1256	Name										prototype		True	
+1257	Object	object											True	
+1258	Name										__proto__		True	
+1259	Name										constructor		True	
+1260	Name										__proto__		True	
+1261	Name										constructor		True	
+1262	Name										TriggerEvent		True	
+1263	Artificial_AST	AST_CLOSURE											True	
+1264	Artificial_AST	string				0					MarkSource		True	
+1265	Artificial	CFG_FUNC_ENTRY											True	
+1266	Artificial	CFG_FUNC_EXIT											True	
+1267	Artificial_AST	AST_PARAM_LIST				1							True	
+1268	Object	function											True	
+1269	Name										prototype		True	
+1270	Object	object											True	
+1271	Name										__proto__		True	
+1272	Name										constructor		True	
+1273	Name										__proto__		True	
+1274	Name										constructor		True	
+1275	Name										MarkSource		True	
+1276	Artificial_AST	AST_CLOSURE											True	
+1277	Artificial_AST	string				0					MarkSink		True	
+1278	Artificial	CFG_FUNC_ENTRY											True	
+1279	Artificial	CFG_FUNC_EXIT											True	
+1280	Artificial_AST	AST_PARAM_LIST				1							True	
+1281	Object	function											True	
+1282	Name										prototype		True	
+1283	Object	object											True	
+1284	Name										__proto__		True	
+1285	Name										constructor		True	
+1286	Name										__proto__		True	
+1287	Name										constructor		True	
+1288	Name										MarkSink		True	
+1289	Artificial_AST	AST_CLOSURE											True	
+1290	Artificial_AST	string				0					MarkAttackEntry		True	
+1291	Artificial	CFG_FUNC_ENTRY											True	
+1292	Artificial	CFG_FUNC_EXIT											True	
+1293	Artificial_AST	AST_PARAM_LIST				1							True	
+1294	Object	function											True	
+1295	Name										prototype		True	
+1296	Object	object											True	
+1297	Name										__proto__		True	
+1298	Name										constructor		True	
+1299	Name										__proto__		True	
+1300	Name										constructor		True	
+1301	Name										MarkAttackEntry		True	
+1302	Artificial_AST	AST_CLOSURE											True	
+1303	Artificial_AST	string				0					debug_sink		True	
+1304	Artificial	CFG_FUNC_ENTRY											True	
+1305	Artificial	CFG_FUNC_EXIT											True	
+1306	Artificial_AST	AST_PARAM_LIST				1							True	
+1307	Object	function											True	
+1308	Name										prototype		True	
+1309	Object	object											True	
+1310	Name										__proto__		True	
+1311	Name										constructor		True	
+1312	Name										__proto__		True	
+1313	Name										constructor		True	
+1314	Name										debug_sink		True	
+1315	Artificial_AST	AST_CLOSURE											True	
+1316	Artificial_AST	string				0					sink_function		True	
+1317	Artificial	CFG_FUNC_ENTRY											True	
+1318	Artificial	CFG_FUNC_EXIT											True	
+1319	Artificial_AST	AST_PARAM_LIST				1							True	
+1320	Object	function											True	
+1321	Name										prototype		True	
+1322	Object	object											True	
+1323	Name										__proto__		True	
+1324	Name										constructor		True	
+1325	Name										__proto__		True	
+1326	Name										constructor		True	
+1327	Name										sink_function		True	
+1328	Scope	BLOCK_SCOPE									Block5:0		True	
+1329	Object	function									demos/test/opgen_generated_files/cs_0.js		True	
+1330	Name										prototype		True	
+1331	Object	object											True	
+1332	Name										__proto__		True	
+1333	Name										constructor		True	
+1334	Name										__proto__		True	
+1335	Name										constructor		True	
+1336	Name										demos/test/opgen_generated_files/cs_0.js		True	
+1337	Name										name		True	
+1338	Object	string			demos/test/opgen_generated_files/cs_0.js								True	
+1339	Name										__proto__		True	
+1340	Name										constructor		True	
+1341	Name										length		True	
+1342	Object	number			40								True	
+1343	Name										length		True	
+1344	Object	number			0								True	
+1345	Scope	FILE_SCOPE									File7:0		True	
+1346	Name										window		True	
+1347	Object	object											True	
+1348	Name										__proto__		True	
+1349	Name										constructor		True	
+1350	Name										null		True	
+1351	Object	object			null								True	
+1352	Name										__proto__		True	
+1353	Name										constructor		True	
+1354	Object	boolean			true								True	
+1355	Name										true		True	
+1356	Object	boolean			false								True	
+1357	Name										false		True	
+2471	Object	undefined			undefined								True	
+2472	Name										undefined		True	
+2473	Object	number			Infinity								True	
+2474	Name										Infinity		True	
+2475	Object	number			-Infinity								True	
+2476	Object	number			nan								True	
+2477	Name										NaN		True	
+2478	Artificial_AST	AST_CLOSURE											True	
+2479	Artificial_AST	string				0					RegisterFunc		True	
+2480	Artificial	CFG_FUNC_ENTRY											True	
+2481	Artificial	CFG_FUNC_EXIT											True	
+2482	Artificial_AST	AST_PARAM_LIST				1							True	
+2483	Object	function											True	
+2484	Name										prototype		True	
+2485	Object	object											True	
+2486	Name										__proto__		True	
+2487	Name										constructor		True	
+2488	Name										__proto__		True	
+2489	Name										constructor		True	
+2490	Name										RegisterFunc		True	
+2491	Artificial_AST	AST_CLOSURE											True	
+2492	Artificial_AST	string				0					TriggerEvent		True	
+2493	Artificial	CFG_FUNC_ENTRY											True	
+2494	Artificial	CFG_FUNC_EXIT											True	
+2495	Artificial_AST	AST_PARAM_LIST				1							True	
+2496	Object	function											True	
+2497	Name										prototype		True	
+2498	Object	object											True	
+2499	Name										__proto__		True	
+2500	Name										constructor		True	
+2501	Name										__proto__		True	
+2502	Name										constructor		True	
+2503	Name										TriggerEvent		True	
+2504	Artificial_AST	AST_CLOSURE											True	
+2505	Artificial_AST	string				0					MarkSource		True	
+2506	Artificial	CFG_FUNC_ENTRY											True	
+2507	Artificial	CFG_FUNC_EXIT											True	
+2508	Artificial_AST	AST_PARAM_LIST				1							True	
+2509	Object	function											True	
+2510	Name										prototype		True	
+2511	Object	object											True	
+2512	Name										__proto__		True	
+2513	Name										constructor		True	
+2514	Name										__proto__		True	
+2515	Name										constructor		True	
+2516	Name										MarkSource		True	
+2517	Artificial_AST	AST_CLOSURE											True	
+2518	Artificial_AST	string				0					MarkSink		True	
+2519	Artificial	CFG_FUNC_ENTRY											True	
+2520	Artificial	CFG_FUNC_EXIT											True	
+2521	Artificial_AST	AST_PARAM_LIST				1							True	
+2522	Object	function											True	
+2523	Name										prototype		True	
+2524	Object	object											True	
+2525	Name										__proto__		True	
+2526	Name										constructor		True	
+2527	Name										__proto__		True	
+2528	Name										constructor		True	
+2529	Name										MarkSink		True	
+2530	Artificial_AST	AST_CLOSURE											True	
+2531	Artificial_AST	string				0					MarkAttackEntry		True	
+2532	Artificial	CFG_FUNC_ENTRY											True	
+2533	Artificial	CFG_FUNC_EXIT											True	
+2534	Artificial_AST	AST_PARAM_LIST				1							True	
+2535	Object	function											True	
+2536	Name										prototype		True	
+2537	Object	object											True	
+2538	Name										__proto__		True	
+2539	Name										constructor		True	
+2540	Name										__proto__		True	
+2541	Name										constructor		True	
+2542	Name										MarkAttackEntry		True	
+2543	Artificial_AST	AST_CLOSURE											True	
+2544	Artificial_AST	string				0					debug_sink		True	
+2545	Artificial	CFG_FUNC_ENTRY											True	
+2546	Artificial	CFG_FUNC_EXIT											True	
+2547	Artificial_AST	AST_PARAM_LIST				1							True	
+2548	Object	function											True	
+2549	Name										prototype		True	
+2550	Object	object											True	
+2551	Name										__proto__		True	
+2552	Name										constructor		True	
+2553	Name										__proto__		True	
+2554	Name										constructor		True	
+2555	Name										debug_sink		True	
+2556	Artificial_AST	AST_CLOSURE											True	
+2557	Artificial_AST	string				0					sink_function		True	
+2558	Artificial	CFG_FUNC_ENTRY											True	
+2559	Artificial	CFG_FUNC_EXIT											True	
+2560	Artificial_AST	AST_PARAM_LIST				1							True	
+2561	Object	function											True	
+2562	Name										prototype		True	
+2563	Object	object											True	
+2564	Name										__proto__		True	
+2565	Name										constructor		True	
+2566	Name										__proto__		True	
+2567	Name										constructor		True	
+2568	Name										sink_function		True	
+2569	Scope	BLOCK_SCOPE									Block10:0		True	
+2570	Name										options		True	
+2571	Object	number			3.0								True	
+2572	Object	function									{anon}		True	
+2573	Name										prototype		True	
+2574	Object	object											True	
+2575	Name										__proto__		True	
+2576	Name										constructor		True	
+2577	Name										__proto__		True	
+2578	Name										constructor		True	
+2579	Name										length		True	
+2580	Object	number			2								True	
+2581	Name										test_function		True	
+2582	Object	object											True	
+2583	Name										__proto__		True	
+2584	Name										constructor		True	
+2585	Object	string			search								True	
+2586	Name										__proto__		True	
+2587	Name										constructor		True	
+2588	Name										length		True	
+2589	Object	number			6								True	
+2590	Name										type		True	
+2591	Name										length		True	
+2592	Object	number			1								True	
+2593	Object	function									{anon}		True	
+2594	Name										prototype		True	
+2595	Object	object											True	
+2596	Name										__proto__		True	
+2597	Name										constructor		True	
+2598	Name										__proto__		True	
+2599	Name										constructor		True	
+2600	Name										length		True	
+2601	Object	number			1								True	
+2602	Scope	FUNC_SCOPE									Function18:70		True	
+2603	Name										arguments		True	
+2604	Object	array											True	
+2605	Name										__proto__		True	
+2606	Name										constructor		True	
+2607	Name										0		True	
+2608	Name										extensionId		True	
+2609	Name										1		True	
+2610	Name										msg		True	
+2611	Object	object			*								True	
+2612	Name										2		True	
+2613	Name										length		True	
+2614	Object	number			3								True	
+2615	Scope	BLOCK_SCOPE									Block33:0		True	
+2616	Name										3		True	

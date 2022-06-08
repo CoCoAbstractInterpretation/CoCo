@@ -1,0 +1,202 @@
+(['17607', '17617', '17900', '18373'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with XMLHttpRequest_url_sink
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+(['17607', '17617', '17900', '18373', '18375'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with XMLHttpRequest_url_sink
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+(['17607', '17617', '17900', '19391'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_data_sink
+from cs_window_eventListener_message to jQuery_post_data_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1036	        a.Method == "GET" ? x = x+1: $.post(a.URL,  a.post, function(b) {
+	a.post
+
+(['17607', '17617', '17900', '18373'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_url_sink
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+(['17607', '17617', '17900', '18373', '18375'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_url_sink
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+(['17607', '17617', '19639', '20111', '20114'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with XMLHttpRequest_url_sink
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+(['17607', '17617', '19639', '20111'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with XMLHttpRequest_url_sink
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+(['17607', '17617', '19639', '21145'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_data_sink
+from cs_window_eventListener_message to jQuery_post_data_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1036	        a.Method == "GET" ? x = x+1: $.post(a.URL,  a.post, function(b) {
+	a.post
+
+(['17607', '17617', '19639', '20111', '20114'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_url_sink
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+(['17607', '17617', '19639', '20111'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/eRail_in with jQuery_post_url_sink
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 497	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/cs_0.js
+Line 498	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1088	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+(['19416', '19444', '19456', '19468', '22278'], 'jQuery_post_source')
+~~~tainted detected!~~~in extension: demos/eRail_in with JQ_obj_val_sink
+from jQuery_post_source to JQ_obj_val_sink
+==========================
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 337	    var responseText = 'data_from_url_by_post';
+	responseText = 'data_from_url_by_post'
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1038	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "")
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1038	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>")
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1038	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+$FilePath$demos/eRail_in/opgen_generated_files/bg.js
+Line 1038	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+

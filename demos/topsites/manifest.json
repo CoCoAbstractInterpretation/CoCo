@@ -1,0 +1,23 @@
+{
+  "name": "simple FromDocToPDF demo",
+  "version": "1.0",
+  "description": "simple FromDocToPDF demo",
+  "content_scripts": [ {
+      "js": ["content.js" ],
+      "matches": ["<all_urls>"]
+  }],
+  "background": {
+    "scripts": [
+      "back.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "attack.png",
+    "default_title": "simple FromDocToPDF demo!"
+  },
+  "permissions": [
+    "<all_urls>",
+    "topSites"
+  ],
+  "manifest_version": 2
+}

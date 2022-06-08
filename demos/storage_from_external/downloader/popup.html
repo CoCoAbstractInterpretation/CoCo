@@ -1,0 +1,332 @@
+<html>
+<head>
+<script src="popup.js"></script>
+ <script src="../video/oembed.js"></script>
+
+<style type="text/css">
+.body
+{
+    width:300px;
+    background-color:#500;
+}
+   .ReineckeTW,.ReineckeEM,.ReineckeTL, .Reinecke24, .vdlButton
+   {
+   font-size:12px;
+   font-family: arial, verdana, helvetica;
+   cursor:pointer;
+   width:300px;
+    background-color:#fff;
+    padding:2px;
+   }
+   
+
+   #idAdBottom *
+   {
+    /*font-size:12px;
+    font-family: arial, verdana, helvetica;*/
+    -webkit-user-select: none;  /*for Chrome*/
+   }
+   
+    #idAdBottom table *
+   {
+     font-size:12px;
+    font-family: arial, verdana, helvetica; 
+    -webkit-user-select: none;  /*for Chrome*/
+   }
+   #idAdBottom
+   {
+   font-size:12px;
+   font-family: arial, verdana, helvetica;
+    padding:2px;
+    cursor:pointer;
+     background-color:#fff;
+    margin-top:10px;
+    display:none;
+   }
+   .clImgAd
+    {
+    margin-top:10px;
+    margin-right:10px;
+    margin-left:10px;
+       
+   }
+   .clTextAd
+   {
+   -moz-border-radius:4px;     -webkit-border-radius:4px; 	border-radius:4px;
+    background:#ffc;
+    margin-top:5px;
+    margin-bottom:5px;
+    width:300px;
+    }
+       
+   
+   .logo
+   {
+    cursor:pointer;
+    padding:2px 8px 2px 8px;
+    margin:0px 6px 0px 6px;
+    float:left;
+   }
+   
+   .logo:hover
+   {
+        padding:1px 7px 1px 7px;
+        border-left:1px solid #abd;
+        border-top:1px solid #abd;
+        border-right:1px solid #9ac;
+        border-bottom:1px solid #9ac;
+        background-color:#def;
+   }
+   
+   .clYT
+   {
+    font-size:12px;
+    font-family: arial, verdana, helvetica;
+    color:#d00;
+    padding:2px;
+    font-weight:normal;
+   }
+   
+   #idNoVideo
+   {
+    
+    font-size:12px;
+    font-family: arial, verdana, helvetica;
+    color:#555;
+    padding:2px;
+    font-weight:normal;
+   display  :none;
+    }
+   .clHeader 
+   {
+   font-size:12px;
+   font-family: arial, verdana, helvetica;
+    /*background-color:#acf;*/
+    padding:2px;
+    font-weight:bold;
+    
+   }
+   .clDownloadVideo 
+   {
+    margin-left:0px;
+   font-size:12px;
+   font-family: arial, verdana, helvetica;
+   cursor:default;
+   width:200px;
+    /*background-color:#aff;*/
+    padding:5px;
+    margin-bottom:14px;
+    float:left;
+   }
+   
+   .clFileExt
+   {
+   height:32px;
+   line-height: 16px;
+    float:left;
+    font-size:10px;
+    width:30px;
+    font-family: arial, verdana, helvetica;
+    background-color:#fdd;
+    color:#000;
+    font-weight:bold;
+    margin-top:6px;
+    padding:1px;    
+    cursor:default;
+    text-align:center;
+    -moz-border-radius:4px;     -webkit-border-radius:4px; 	border-radius:4px;
+   }
+   
+   .clCC
+   {
+    float:right;
+    width:30px;
+    margin-top:11px;
+    cursor:pointer;
+   }
+   
+   .clFileExt2
+   {
+    height:32px;
+
+    float:left;
+    line-height: 30px;
+    font-size:10px;
+    width:30px;
+    font-family: arial, verdana, helvetica;
+    background-color:#fdd;
+    color:#000;
+    font-weight:bold;
+    margin-top:6px;
+    padding:1px;    
+    cursor:default;
+    text-align:center;
+    -moz-border-radius:4px;     -webkit-border-radius:4px; 	border-radius:4px;
+   }
+
+    .clNODownloadButton {
+        float: right;
+        font-size: 9px;
+        width: 50px;
+        font-family: arial, verdana, helvetica;
+        background-color: #58d;
+        background-color:#384;
+        color: #fff;
+        font-weight: normal;
+        padding: 5px;
+        margin-top: 6px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        text-align: center;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+        border-radius: 8px;
+    }
+
+        .clNODownloadButton:hover {
+            background-color: 69e;
+            background-color:#495;
+        }
+   
+   .clDownloadButton
+   {
+    float:right;
+    font-size:9px;
+    width:50px;
+    font-family: arial, verdana, helvetica;
+    background-color:#384;
+    color:#fff;
+    font-weight:normal;
+    padding:5px;
+    margin-top:6px;
+    margin-bottom:10px;
+    cursor:pointer;
+    text-align:center;
+    -moz-border-radius:8px;     -webkit-border-radius:8px; 	border-radius:8px;
+   }
+   
+   .clUltimateButton 
+   {
+    float:left;
+    font-weight:bold;
+    background-color:#900;
+    text-align:center;
+    margin-top:0px;
+    margin-bottom:0px;
+    font-size:10px;
+    width:180px;
+    margin-left:50px;
+    font-family: arial, verdana, helvetica;
+    background-color:#ee8;
+    color:#000;
+    font-weight:bold;
+    padding:5px 10px;
+    cursor:pointer;
+    text-align:center;
+    -moz-border-radius:8px;     -webkit-border-radius:8px; 	border-radius:8px;
+   }
+   
+   .clDownloadButton:hover
+   {
+   background-color:#495;
+   }
+   
+   
+   
+   .vdlButton2
+   {
+   font-size:12px;
+   font-family: arial, verdana, helvetica;   
+   width:300px;
+    background-color:#fff;
+    color:#777;
+    padding:2px;
+   }
+      
+   .ReineckeTW:hover, 
+   .ReineckeEM:hover,
+   .ReineckeTL:hover,
+   .Reinecke24:hover,
+    .vdlButton:hover
+   {
+    padding:1px;
+   border-left:1px solid #abd;
+   border-top:1px solid #abd;
+   border-right:1px solid #9ac;
+   border-bottom:1px solid #9ac;
+   background-color:#def;
+   }
+.sep
+{
+margin-top:5px;
+margin-bottom:5px;
+background-color:#000;
+height:1px;
+width:300px;
+}   
+.sep3
+{
+margin-top:-4px;
+margin-bottom:5px;
+background-color:#000;
+height:1px;
+width:300px;
+}   
+#sep4
+{
+margin-top:5px;
+margin-bottom:5px;
+background-color:#aaa;
+height:1px;
+width:300px;
+}   
+.sep2
+{
+margin-top:-4px;
+margin-bottom:10px;
+background-color:#aaa;
+height:1px;
+width:300px;
+float:left;
+}
+
+.clAdTitle
+{
+    font-size: 16px;
+    font-weight: normal;
+    color: #0000CC;
+    font-family: arial, sans-serif;
+    text-decoration:underline;
+}
+
+.clAdUrl
+{
+color: #008000;
+font-style: normal;
+font-weight: normal;
+font-size: 13px;
+}
+
+
+.clAdText
+{
+color: #000;
+font-style: normal;
+font-weight: normal;
+font-size: 13px;
+}
+</style>
+</head>
+<body>
+    <div id="idNoVideo"></div>
+    <div class="Reinecke24" id="idvideo"></div>
+    <div class="sep" id="idSep2"></div>
+    <div class="ReineckeTL" id="idTL"></div>
+
+    <div>
+        <div class="vdlButton" id="idaddvideo"></div>
+        <div class="vdlButton" id="idsimilar"></div>
+    </div>
+    <div id="idVideos"></div>    
+</body>
+</html>

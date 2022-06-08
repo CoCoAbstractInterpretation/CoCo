@@ -1,0 +1,34 @@
+(['13217', '13230', '13255', '14320'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/aboihlmnifahajfibplgbmjlhplfmilg_server with chrome_downloads_download_sink
+from cs_window_eventListener_message to chrome_downloads_download_sink
+==========================
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 503	window.addEventListener("message", function(event) {
+	event
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 507		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 507		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/bg.js
+Line 965				let fileName = event.fileName;
+	event.fileName
+
+(['13217', '13230', '13255', '14318'], 'cs_window_eventListener_message')
+~~~tainted detected!~~~in extension: demos/aboihlmnifahajfibplgbmjlhplfmilg_server with chrome_downloads_download_sink
+from cs_window_eventListener_message to chrome_downloads_download_sink
+==========================
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 503	window.addEventListener("message", function(event) {
+	event
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 507		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/cs_0.js
+Line 507		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/aboihlmnifahajfibplgbmjlhplfmilg_server/opgen_generated_files/bg.js
+Line 964				let URL = event.link;
+	event.link
+
