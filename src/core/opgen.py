@@ -432,8 +432,8 @@ def admin_threads(G, function, args):
                     for son in G.branch_son_dad:
                         if G.branch_son_dad[son][0]==dad_thread:
                             sons.append(son)
-                    ## POLICY1 or 3: if one son finishes, the father is notified
-                    if G.policy in [1,3]:
+                    ## POLICY1: if one son finishes, the father is notified
+                    if G.policy ==1:
                         cv = G.branch_son_dad[sons[0]][1]
                         for son in sons:
                             del G.branch_son_dad[son]
@@ -447,6 +447,12 @@ def admin_threads(G, function, args):
                             with cv:
                                 cv.notify()
                         del G.branch_son_dad[t.thread_self.name]
+                    elif G.policy ==3:
+                        cv = G.branch_son_dad[sons[0]][1]
+                        del G.branch_son_dad[t.thread_self.name]
+                        with cv:
+                            # print('notify father ' + dad_thread.name)
+                            cv.notify()
         while len(G.work_queue)<1 and len(G.pq)>0:
             fetch_new_thread(G)
         active_thread = [i for i in threading.enumerate()if not i.daemon]

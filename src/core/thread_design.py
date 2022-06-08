@@ -13,6 +13,7 @@ class thread_info():
         self.running.set()      # 将running设置为True
         self.last_start_time = last_start_time
         self.code_cov_imp = 0
+        self.copy_thread = False
         self.thread_age = thread_age
         self.handled = False
 

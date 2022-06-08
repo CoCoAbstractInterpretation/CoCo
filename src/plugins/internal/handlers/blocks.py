@@ -37,6 +37,7 @@ def simurun_block(G, ast_node, parent_scope=None, branches=None,
 
 
     if not G.thread_stmt:
+        current_thread = threading.current_thread()
         for (i,stmt) in enumerate(stmts):
             if check_return(G, branches):
                 break
@@ -56,7 +57,28 @@ def simurun_block(G, ast_node, parent_scope=None, branches=None,
             else:
                 G.cur_stmt = stmt
             G.cfg_stmt = stmt
-            handled_res = internal_manager.dispatch_node(stmt, ExtraInfo(branches=branches))
+            if G.policy==3:
+                with G.thread_info_lock:
+                    parent_info=G.thread_infos[current_thread.name]
+                parent_copy = parent_info.copy_thread
+                if parent_copy:
+                    last_len = get_len_son(G, current_thread)
+                    print(last_len)
+                    while True:
+                        len_son = get_len_son(G, current_thread)
+                        if len_son<=0:
+                            break
+                        print(len_son)
+                        if len_son<last_len:
+                            last_len = len_son
+                            func = internal_manager.dispatch_node
+                            args = (stmt, ExtraInfo(branches=branches))
+                            t = emit_thread(G, func, args, thread_age=parent_info.thread_age)
+                    handled_res = internal_manager.dispatch_node(stmt, ExtraInfo(branches=branches))
+                else:
+                    handled_res = internal_manager.dispatch_node(stmt, ExtraInfo(branches=branches))
+            else:
+                handled_res = internal_manager.dispatch_node(stmt, ExtraInfo(branches=branches))
     else:
         current_thread = threading.current_thread()
         with G.thread_info_lock:
@@ -87,6 +109,12 @@ def simurun_block(G, ast_node, parent_scope=None, branches=None,
 
     return list(returned_objs), list(used_objs), break_signal
 
+def get_len_son(G, current_thread):
+    sons = []
+    for son in G.branch_son_dad:
+        if G.branch_son_dad[son][0] == current_thread:
+            sons.append(son)
+    return len(sons)
 
 def check_return(G, branches):
     ancestor_scope = G.find_ancestor_scope()
