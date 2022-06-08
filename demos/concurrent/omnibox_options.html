@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Bookmark Search Extension - Options</title>
+<script type="text/javascript" src="options.js"></script>
+<script type="text/javascript" src="page_common.js"></script>
+</head>
+<body>
+<h1><a href="https://chrome.google.com/webstore/detail/hhmokalkpaiacdofbcddkogifepbaijk" target="_blank">Bookmark Search</a> Extension - Options</h1>
+<form id="myform">
+<table>
+<tbody>
+<tr>
+<td style="text-align:right"><label for="tabbed">Open bookmarks on</label></td>
+<td>
+<select id="tabbed">
+<option value="currentTab">the current tab</option>
+<option value="newForegroundTab">new tab</option>
+<option value="newBackgroundTab">new tab in background</option>
+<option value="disposition">the current tab, or new tab when Alt+Enter is pressed, or background when an item is middle-clicked</option>
+</select>
+</td>
+</tr>
+<tr>
+<td style="text-align:right"><label for="matchname">Automatically selects full match on <b>name</b></label></td>
+<td><input type="checkbox" id="matchname" /></td>
+</tr>
+<tr>
+<td style="text-align:right"><label for="jsbm">Enable support for JavaScript bookmarklets</label></td>
+<td><input type="checkbox" id="jsbm" /></td>
+</tr>
+<tr>
+<td style="text-align:right"><label for="maxcount">Maximum display items count excluding default selection <sup>[1]</sup></label></td>
+<td><input type="number" id="maxcount" min="2" max="10" /></td>
+</tr>
+<tr>
+<td style="text-align:right"><label for="searchalgorithm">Searching and sorting algorithm to use <a href="search_test.html">(Try here!)</a> </label></td>
+<td>
+<select id="searchalgorithm">
+<option value="builtin">Chrome built-in search</option>
+<option value="v2">Bookmark Search version 2</option>
+</select>
+</td>
+</tr>
+</tbody>
+</table>
+<input type="submit" value="Save options" />
+</form>
+<div id="status" style="background-color:yellow;color:red;"></div><br />
+<b>Please report if you found bugs!</b>
+<hr />
+[1] Do note that Chrome has its own limit, so you may not display more than 5.
+<hr />
+<a href="https://chrome.google.com/webstore/detail/hhmokalkpaiacdofbcddkogifepbaijk" target="_blank">Bookmark Search</a> version <span name="version">this version</span> (<a href="whatsnew.html" target="_blank">What&apos;s new</a>)
+</body>
+</html>

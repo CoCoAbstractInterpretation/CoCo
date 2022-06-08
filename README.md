@@ -28,7 +28,7 @@ $ ./single_run.sh demos/exec_code
 ```
 To run with concurrent version:
 ```shell
-$ ./single_run.sh demos/exec_code -pq
+$ ./single_run.sh demos/concurrent -pq
 ```
 Or add any arguments you like.
 
