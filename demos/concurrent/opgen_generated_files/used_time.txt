@@ -961,3 +961,47 @@ beta: 0
 gamma: 1
 demos/concurrent finish within 15.754971265792847 seconds#### with code_cov 33.108108108108105% stmt covered####
 
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/concurrent
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 1
+seq_timeout: 0.02
+policy: 1
+alpha: 0
+beta: 0
+gamma: 1
+demos/concurrent finish within 15.91461992263794 seconds#### with code_cov 39.189189189189186% stmt covered####
+
