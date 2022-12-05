@@ -4,6 +4,7 @@ from src.core.utils import NodeHandleResult
 from src.core.options import options
 import threading
 import time
+import os
 
 class PluginManager(object):
     """
@@ -119,6 +120,11 @@ class PluginManager(object):
             if self.G.auto_stop and self.G.stop_sign:
                 print('see sign, stop')
                 return NodeHandleResult()
+            # check whether timeout
+            # with self.G.TimeoutErrorLock:
+            #     if self.G.TimeoutError:
+            #         print('see TimeoutError, stop' + str(threading.current_thread()))
+            #         return NodeHandleResult()
             if self.G.thread_version:
                 current_thread = threading.current_thread()
                 with self.G.thread_info_lock:
@@ -127,29 +133,42 @@ class PluginManager(object):
                     # print('manager wait in thread: ', current_thread.name)
                     cur_info.flag.wait()
                     # check running time of current thread, and there is other thread waiting in the pq
-                    if time.time() - cur_info.last_start_time > 0.1 and len(self.G.pq)>0:
+                    if time.time() - cur_info.last_start_time > self.G.time_slice and len(self.G.ready_queue)>0:
                         # print(str(current_thread) + 'timeout')
-                        with self.G.work_queue_lock:
-                            if cur_info in self.G.work_queue:
-                                self.G.work_queue.remove(cur_info)
+                        with self.G.running_queue_lock:
+                            if cur_info in self.G.running_queue:
+                                self.G.running_queue.remove(cur_info)
                         CovInclast = cur_info.code_cov_imp
                         # print("CovInclast: ", CovInclast)
-                        cur_info.thread_age += (self.G.gamma*1 - self.G.alpha*CovInclast)
+                        if  self.G.ablation_mode =="odgen-ext-co":
+                            cur_info.thread_age = 1
+                        else:
+                            cur_info.thread_age += (self.G.gamma*1 - self.G.alpha*CovInclast)
+                        # print(str(cur_info.thread_self) + " is paused")
                         cur_info.pause()
-                        with self.G.pq_lock:
-                            self.G.pq.append(cur_info)
-                            self.G.pq.sort(key=lambda x: x.thread_age, reverse=False)
-                        if len(self.G.work_queue)<1:
+                        with self.G.ready_queue_lock:
+                            self.G.ready_queue.append(cur_info)
+                            self.G.ready_queue.sort(key=lambda x: x.thread_age, reverse=False)
+                        if len(self.G.running_queue)<1:
                             from src.core.opgen import fetch_new_thread
                             fetch_new_thread(self.G)
                         continue
                     else:
+                        is_statement_flag = False
                         if self.G.is_statement(node_id):
+                            if self.G.code_progress_html:
+                                from src.core.checker import get_path_text_progress
+                                content = get_path_text_progress(self.G, [node_id])
+                                text_time = str(time.time())
+                                res_dir = os.path.join(self.G.package_name, 'opgen_generated_files', 'progress.txt')
+                                with open(res_dir, 'a') as f:
+                                    f.write("$$$$\n" + text_time + "\n" + content + "$$$$\n")
+                            is_statement_flag = True
                             if node_id in self.G.get_all_but_header_stmt():
                                 if node_id not in self.G.covered_stat:
                                     with self.G.thread_info_lock:
                                         self.G.thread_infos[current_thread.name].code_cov_imp += 1
-                        handle_res = self.inner_dispatch_node(node_id, extra)
+                        handle_res = self.inner_dispatch_node(node_id, extra, is_statement_flag)
                         break
             else:
                 # print(node_id)
@@ -158,14 +177,13 @@ class PluginManager(object):
             return handle_res
 
 
-        def inner_dispatch_node(self, node_id, extra=None):
+        def inner_dispatch_node(self, node_id, extra=None, is_statement_flag=False):
             # print('pq in inner_dispatch_node', pq)
             if self.G.finished:
                 return NodeHandleResult()
-
-            if self.G.is_statement(node_id):
+            if is_statement_flag:
                 line_mark = self.G.get_node_attr(node_id)['namespace'].split(":")
-                loggers.main_logger.info(f"Running Line {line_mark[0]} to {line_mark[2]}")
+                # loggers.main_logger.info(f"Running Line {line_mark[0]} to {line_mark[2]}")
                 if node_id in self.G.get_all_but_header_stmt():
                     if node_id not in self.G.covered_stat:
                         self.G.covered_stat[node_id] = 0

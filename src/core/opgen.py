@@ -17,6 +17,7 @@ import threading
 from src.core.thread_design import thread_info
 import json
 from src.plugins.internal.handlers.event_loop import event_loop_no_threading
+import datetime
 
 class OPGen:
     """
@@ -28,6 +29,8 @@ class OPGen:
         # initialize header lines here
         if options.easy_test:
             header_path = 'crx_headers_easy/'
+        elif options.dx:
+            header_path = 'crx_headers_dx/'
         else:
             header_path = 'crx_headers/'
         with open(os.path.join(header_path, 'jquery_header.js')) as f:
@@ -108,68 +111,67 @@ class OPGen:
         """
         # preprocess of the files in chrome extension
         print('process chrome extension: ', extension_path)
+        res_dir = os.path.join(G.package_name, 'opgen_generated_files')
+        os.makedirs(res_dir, exist_ok=True)
+        with open(os.path.join(res_dir, 'used_time.txt'), 'a') as f:
+            f.write("analysis starts\n" + str(datetime.datetime.now())+"\n")
+            f.write(self.output_args_str())
         loggers.crx_record_logger.info('process chrome extension: '+ extension_path)
         if G is None:
             G = self.graph
         test_res = None
-        res_dir = os.path.join(G.package_name, 'opgen_generated_files')
-        os.makedirs(res_dir, exist_ok=True)
-        result_file_old = G.result_file_old
+        # result_file_old = G.result_file_old
         result_file = G.result_file
-        if os.path.exists(os.path.join(res_dir, result_file)):
-            os.rename(os.path.join(res_dir, result_file), os.path.join(res_dir, result_file_old))
+        # if os.path.exists(os.path.join(res_dir, result_file)):
+        #     os.rename(os.path.join(res_dir, result_file), os.path.join(res_dir, result_file_old))
         Error_msg = validate_chrome_extension(extension_path, dx)
         if Error_msg:
-            with open(os.path.join(res_dir, result_file), 'w') as f:
+            with open(os.path.join(res_dir, result_file), 'a') as f:
                 f.write(Error_msg)
             return -1
-        if timeout_s is not None:
-            try:
-                with timeout(seconds=timeout_s,error_message="{} timeout after {} seconds".format(extension_path, timeout_s)):
-                    self.parse_run_extension(G, extension_path,dx, res_dir, result_file, vul_type)
-            except TimeoutError as err:
-                covered_stat_rate = self.graph.get_code_cov()
-                if G.measure_code_cov_progress:
-                    G.record_code_cov(covered_stat_rate)
-                with open(os.path.join(res_dir, 'used_time.txt'), 'a') as f:
-                    f.write(self.output_args_str())
-                    f.write(str(err) + " with code_cov {}% stmt covered####".format(covered_stat_rate)+ "\n\n")
-                if not G.detected:
-                    with open(os.path.join(res_dir, result_file), 'w') as f:
-                        f.write('timeout')
-        else:
-            self.parse_run_extension(G, extension_path, dx, res_dir, result_file, vul_type)
-        # test_res = None
+        self.parse_run_extension(G, extension_path, dx, res_dir, result_file, vul_type, timeout_s)
         return test_res
 
-    def parse_run_extension(self, G, extension_path,dx, res_dir, result_file, vul_type):
-        start_time = time.time()
+    def parse_run_extension(self, G, extension_path,dx, res_dir, result_file, vul_type, timeout_s):
+
         Error_msg = parse_chrome_extension(G, extension_path, dx, easy_test=options.easy_test)
         covered_stat_rate = self.graph.get_code_cov()
         if G.measure_code_cov_progress:
             G.record_code_cov(covered_stat_rate)
         if Error_msg:
-            with open(os.path.join(res_dir, result_file), 'w') as f:
+            with open(os.path.join(res_dir, result_file), 'a') as f:
                 f.write(Error_msg)
-        Error_msg = self._test_graph(G, vul_type=vul_type)
-        file_size = 0
-        if os.path.exists(os.path.join(res_dir, result_file)):
-            file_size = os.path.getsize(os.path.join(res_dir, result_file))
-        if Error_msg and file_size == 0:
-            with open(os.path.join(res_dir, result_file), 'w') as f:
-                f.write(Error_msg)
+                f.write("\n")
+        start_time = time.time()
+        with open(os.path.join(res_dir, 'used_time.txt'), 'a') as f:
+            f.write(str(time.time())+"----"+"test_graph starts\n")
+        Error_msg = self._test_graph(G, extension_path, timeout_s, vul_type=vul_type)
+        if Error_msg!="":
+            print(Error_msg)
+            with open(os.path.join(res_dir, result_file), 'a') as f:
+                f.write(Error_msg+"\n")
         end_time = time.time()
+        # print(str(end_time - start_time))
         covered_stat_rate = self.graph.get_code_cov()
         if G.measure_code_cov_progress:
             G.record_code_cov(covered_stat_rate)
         with open(os.path.join(res_dir, 'used_time.txt'), 'a') as f:
-            f.write(self.output_args_str())
-            f.write(extension_path + " finish within {} seconds#### with code_cov {}% stmt covered####".format(str(end_time - start_time), covered_stat_rate) + "\n\n")
+            # f.write(str(datetime.datetime.now())+"\n")
+            # f.write(self.output_args_str())
+            if G.detected:
+                f.write("~~taint detected\n")
+            if "timeout" in Error_msg:
+                f.write(Error_msg + " with code_cov {}% stmt covered####".format(covered_stat_rate) + "\n\n")
+            else:
+                f.write(extension_path + " finish within {} seconds#### with code_cov {}% stmt covered####".format(str(end_time - start_time), covered_stat_rate) + "\n\n")
         if not G.detected:
-            with open(os.path.join(res_dir, result_file), 'w') as f:
-                f.write('nothing detected')
+            with open(os.path.join(res_dir, result_file), 'a') as f:
+                if "timeout" in Error_msg:
+                    f.write('timeout')
+                else:
+                    f.write('nothing detected')
 
-    def _test_graph(self, G: Graph, vul_type='os_command'):
+    def _test_graph(self, G: Graph,extension_path, timeout_s, vul_type='os_command' ):
         """
         for a parsed AST graph, generate OPG and test vul
         Args:
@@ -179,18 +181,75 @@ class OPGen:
         Returns:
             list: the test result pathes of the module
         """
-        Error_msg = None
-        try:
+        # print("==============before _test_graph, see how many threads==============", extension_path)
+        # active_thread = [i for i in threading.enumerate() if not i.daemon]
+        # print((active_thread))
+        # print(G.thread_infos)
+        Error_msg = ''
+        if timeout_s is not None:
+            try:
+                with timeout(seconds=timeout_s, error_message="{} timeout after {} seconds".format(extension_path, timeout_s)):
+                    setup_opg(G)
+                    G.export_node = True
+                    internal_plugins = PluginManager(G, init=True)
+                    entry_id = '0'
+                    generate_branch_graph(G)
+                    generate_obj_graph(G, internal_plugins, entry_nodeid=entry_id)
+                    if not (G.thread_version and G.ablation_mode in ["coco-single", "coco"]):
+                        G.mydata_to_graph()
+                        G.thread_version = False
+                        event_loop_no_threading(G)
+            except TimeoutError as err:
+                # with G.TimeoutErrorLock:
+                #     G.TimeoutError = True
+                Error_msg = str(err)
+                # active_thread = [i for i in threading.enumerate() if not i.daemon]
+                running_queue_infos = [i for i in G.running_queue]
+                pq_infos = [i for i in G.ready_queue]
+                wait_queue_infos = [i for i in G.wait_queue]
+                # notify all the threads to kill them
+                for i in G.branch_son_dad:
+                    cv = G.branch_son_dad[i][1]
+                    with cv:
+                        # print('notify father ' + dad_thread.name)
+                        cv.notify()
+                running_queue_infos.extend(pq_infos)
+                running_queue_infos.extend(wait_queue_infos)
+                # print(len(running_queue_infos))
+                # for i in running_queue_infos:
+                #     i.stop()
+                with G.thread_info_lock:
+                    infos=[i for i in G.thread_infos]
+                    # print(infos)
+                    # G.thread_infos = {}
+                stopped = set()
+                while len(infos)>0:
+                    for i in infos:
+                        G.thread_infos[i].stop()
+                        stopped.add(i)
+                    # print("stopped")
+                    # print(stopped)
+                    # infos = {}
+                    with G.thread_info_lock:
+                        infos=[i for i in G.thread_infos if i not in stopped]
+                        # print(infos)
+                        # G.thread_infos = {}
+            except:
+                Error_msg = "Error: " + G.package_name + " error during test graph"
+        else:
+            # try:
             setup_opg(G)
             G.export_node = True
             internal_plugins = PluginManager(G, init=True)
             entry_id = '0'
             generate_branch_graph(G)
             generate_obj_graph(G, internal_plugins, entry_nodeid=entry_id)
-            if not G.thread_version:
+            if not (G.thread_version and G.ablation_mode in ["coco-single", "coco"]):
+                G.mydata_to_graph()
+                G.thread_version = False
                 event_loop_no_threading(G)
-        except:
-            Error_msg = "Error: " + G.package_name + " error during test graph"
+            # except:
+            #     Error_msg = "Error: " + G.package_name + " error during test graph"
         return Error_msg
 
     def test_module(self, module_path, vul_type='os_command', G=None, 
@@ -361,6 +420,7 @@ def generate_obj_graph(G, internal_plugins, entry_nodeid='0'):
     NodeHandleResult.print_callback = print_handle_result
 
     entry_nodeid = str(entry_nodeid)
+    G.stmt_cnt_ini()
     loggers.main_logger.info(sty.fg.green + "GENERATE OBJECT GRAPH" + sty.rs.all + ": " + entry_nodeid)
     obj_nodes = G.get_nodes_by_type("AST_FUNC_DECL")
     # for node in obj_nodes:
@@ -371,24 +431,33 @@ def generate_obj_graph(G, internal_plugins, entry_nodeid='0'):
         internal_plugins.dispatch_node(entry_nodeid)
     #add_edges_between_funcs(G)
 
+# fetch threads from ready queue to working queue
 def fetch_new_thread(G):
-    with G.pq_lock:
-        result = G.pq[0]
-        del G.pq[0]
-        while result in G.work_queue and len(G.pq)>0:
-            result = G.pq[0]
-            del G.pq[0]
-    if result not in G.work_queue:
-        # print('fetch new thread: ', result.thread_self.name)
-        result.last_start_time = time.time()
-        with G.work_queue_lock:
-            G.work_queue.add(result)
-        result.resume()
+    threads = []
+    with G.ready_queue_lock:
+        threads.append(G.ready_queue[0])
+        age = G.ready_queue[0].thread_age
+        del G.ready_queue[0]
+        if G.ablation_mode in ["coco"] and len(G.ready_queue)>0:
+            while len(G.ready_queue)>0 and G.ready_queue[0].thread_age==age:
+                threads.append(G.ready_queue[0])
+                del G.ready_queue[0]
+        elif G.ablation_mode in ["coco-single", "odgen-ext-co"]:
+            pass
+    with G.running_queue_lock:
+        for i in threads:
+            if i not in G.running_queue:
+                # print('fetch new thread: ', result.thread_self.name)
+                i.last_start_time = time.time()
+                G.running_queue.add(i)
+                i.resume()
+
 
 
 # the function to admin the threads, to use this, you have to pass G and the initial running thread
 def admin_threads(G, function, args):
     print('admin threads')
+    # see the number of threads through time
     if G.measure_thread:
         package_id = G.package_name.split("/")[-1]
         thread_measure_file = "thread_measure/" + package_id + '.txt'
@@ -398,12 +467,13 @@ def admin_threads(G, function, args):
         with open(thread_measure_file, "a") as f:
             f.write(newline + "\n")
     t = Thread(target=function, args=args)
+    # print("new thread in admin: " + str(t))
     info = thread_info(thread=t, last_start_time=time.time(), thread_age=1)
     with G.thread_info_lock:
         G.thread_infos[t.name] = info
     t.start()
-    with G.work_queue_lock:
-        G.work_queue.add(info)
+    with G.running_queue_lock:
+        G.running_queue.add(info)
     while True:
         if G.measure_thread:
             new_time = time.time()
@@ -411,52 +481,55 @@ def admin_threads(G, function, args):
                 old_time = new_time
                 old_len = len(threading.enumerate())
                 newline = "THREAD " + str(old_len)+" "+str(old_time)
-                # thread_time.append(newline)
                 with open(thread_measure_file, "a") as f:
                     f.write(newline + "\n")
-        with G.work_queue_lock:
-            for t in G.work_queue:
+        with G.running_queue_lock:
+            for t in G.running_queue:
                 if not t.thread_self.is_alive():
                     t.handled = True
-            dead = [i for i in G.work_queue if i.handled]
-            G.work_queue = set([i for i in G.work_queue if not i.handled])
-            # tmp = [i.thread_self for i in G.work_queue]
-            # print('%%%%%%%%%work in admin: ', tmp)
+            dead = [i for i in G.running_queue if i.handled]
+            G.running_queue = set([i for i in G.running_queue if not i.handled])
         for t in dead:
             # if this thread is dead
             # if this thread has a father thread,
             if t.thread_self.name in G.branch_son_dad:
                 with G.branch_son_dad_lock:
                     dad_thread = G.branch_son_dad[t.thread_self.name][0]
-                    sons = []
-                    for son in G.branch_son_dad:
-                        if G.branch_son_dad[son][0]==dad_thread:
-                            sons.append(son)
-                    ## POLICY1: if one son finishes, the father is notified
+                    sons = [i for i in G.branch_son_dad if G.branch_son_dad[i][0]==dad_thread]
+                    ## POLICY1: if one son finishes, the parent is notified
                     if G.policy ==1:
                         cv = G.branch_son_dad[sons[0]][1]
                         for son in sons:
                             del G.branch_son_dad[son]
                         with cv:
-                            # print('notify father ' + dad_thread.name)
                             cv.notify()
-                    ## POLICY1: father waits for all sons, until the last one finishes
+                    ## POLICY2: parent waits for all sons, until the last one finishes
                     elif G.policy==2:
                         if len(sons)==1:
                             cv = G.branch_son_dad[sons[0]][1]
                             with cv:
                                 cv.notify()
                         del G.branch_son_dad[t.thread_self.name]
-                    elif G.policy ==3:
+                    ## POLICY3: copy parent thread once a thread finishes
+                    elif G.policy==3:
                         cv = G.branch_son_dad[sons[0]][1]
                         del G.branch_son_dad[t.thread_self.name]
                         with cv:
-                            # print('notify father ' + dad_thread.name)
                             cv.notify()
-        while len(G.work_queue)<1 and len(G.pq)>0:
+        while len(G.running_queue)<1 and len(G.ready_queue)>0:
             fetch_new_thread(G)
-        active_thread = [i for i in threading.enumerate()if not i.daemon]
-        if len(active_thread)==1 and len(G.work_queue)==0 and len(G.pq)==0 and len(G.wait_queue)==0:
+        active_thread = [i for i in threading.enumerate() if not i.daemon]
+        """
+        live = False
+        with G.thread_info_lock:
+            infos = [i for i in G.thread_infos]
+        for i in infos:
+            if G.thread_infos[i].thread_self.is_alive():
+                live = True
+                break
+        if live and len(G.running_queue) == 0 and len(G.ready_queue) == 0 and len(G.wait_queue) == 0:
+        """
+        if len(active_thread)==1 and len(G.running_queue)==0 and len(G.ready_queue)==0 and len(G.wait_queue)==0:
             if G.measure_thread:
                 new_time = time.time()
                 if len(threading.enumerate()) != old_len or new_time - old_time > 0.1:
@@ -466,6 +539,8 @@ def admin_threads(G, function, args):
                     with open(thread_measure_file, "a") as f:
                         f.write(newline + "\n")
             print('finish')
+            # active_thread = [i for i in threading.enumerate() if not i.daemon]
+            # print(active_thread)
             return 1
 
 
@@ -524,18 +599,20 @@ def setup_graph_env(G: Graph):
     G.alpha = options.alpha
     G.beta = options.beta
     G.gamma = options.gamma
+    G.ablation_mode = options.ablation_mode
+    G.dx = options.dx
     G.measure_code_cov_progress = options.measure_code_cov_progress
     G.war = options.war
+    G.result_file = "used_time.txt"
+    G.result_file_old = "res_old.txt"
     if G.war:
-        G.result_file = "res_war.txt"
+        G.result_file = "used_time.txt"
         G.result_file_old =  "res_war_old.txt"
-    else:
-        G.result_file = "res.txt"
-        G.result_file_old = "res_old.txt"
     G.thread_version = options.run_with_pq
     G.all_branch = options.all_branch
     G.client_side = options.chrome_extension
     G.auto_stop = options.autostop
+    G.code_progress_html = options.code_progress_html
 
 
 def babel_convert():

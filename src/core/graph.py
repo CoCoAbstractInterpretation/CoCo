@@ -44,6 +44,9 @@ class MyData(threading.local):
 class Graph:
 
     def __init__(self, cs_header_lines, bg_header_lines, thread_version):
+        self.measure_code_cov_progress = None
+        self.result_file = "used_time.txt"
+        # self.result_file_old = "res_old.txt"
         self.cs_header_lines = cs_header_lines
         self.bg_header_lines = bg_header_lines
         self.thread_version = thread_version
@@ -169,9 +172,6 @@ class Graph:
             doublequote = False
             escapechar = '\\'
         self.csv_dialect = joern_dialect
-        # set a priority queue
-        self.pq = []
-        self.pq_lock = Lock()
 
         self.code_coverage_lock = Lock()
         self.last_code_cov_time = 0
@@ -179,22 +179,18 @@ class Graph:
         self.speed_threshold = 1e-10
         self.stop_sign = False
 
-        self.work_queue = set()
-        self.work_queue_lock = Lock()
+        # set a priority queue
+        self.ready_queue = []
+        self.ready_queue_lock = Lock()
+        self.running_queue = set()
+        self.running_queue_lock = Lock()
         self.wait_queue = set()
         self.wait_queue_lock = Lock()
-        # self.pq_event = Event()
-        # self.reverse_pq_event = Event()
+
         self.add_branch = Condition()
         self.add_branch_bool = False
         self.branch_son_dad = {}
         self.branch_son_dad_lock = Lock()
-        self.timeup = False
-
-        self.running_thread_id=0
-        self.running_thread_age = 0
-        self.running_time = 0
-        self.running_thread = None
 
         # dictionary: {thread name: its thread_info object}
         self.thread_infos = {}
@@ -223,7 +219,8 @@ class Graph:
             "cs_chrome_runtime_sendMessage": "bg_chrome_runtime_onMessage",
             "bg_chrome_tabs_sendMessage": "cs_chrome_runtime_onMessage",
             "bg_chrome_runtime_onMessage_response": "cs_chrome_runtime_sendMessage_onResponse",
-            "cs_chrome_runtime_onMessage_response": "bg_chrome_tabs_sendMessage_onResponse"
+            "cs_chrome_runtime_onMessage_response": "bg_chrome_tabs_sendMessage_onResponse",
+            "chrome_tabs_executeScript_event": "cs_chrome_tabs_executeScript_event"
         }
 
         self.listener_event_dic = {value: key for (key, value) in self.event_listener_dic.items()}
@@ -233,6 +230,15 @@ class Graph:
 
         self.attacked = False
         self.attacked_lock = Lock()
+
+        # self.TimeoutError = False
+        # self.TimeoutErrorLock = Lock()
+
+        # merge optimization
+        # self.name_nodes = set()
+        # self.toplevel_file_nodes = None
+        self.affected_name_nodes = ()
+
 
     # Basic graph operations
     # node
@@ -303,7 +309,6 @@ class Graph:
         """
         get a list of node by key and value
         """
-        # with self.graph_lock:
         tmp = list(self.graph.nodes(data = True))
         return [node[0] for node in tmp if key in node[1] and node[1][key] == value]
 
@@ -419,7 +424,6 @@ class Graph:
         edges = self.graph.in_edges(node_id, data = data, keys = keys)
         with self.graph_lock:
             edges = [edge for edge in edges]
-        # print('get_in_edges: ', len(edges))
         idx = 2
         if keys == True:
             idx = 3
@@ -511,6 +515,7 @@ class Graph:
         # reset cur_id
         with self.cur_id_lock:
             self.cur_id = self.graph.number_of_nodes()
+        # self.stmt_cnt_ini()
 
     def import_from_CSV(self, nodes_file_name, rels_file_name, offset=0):
         with open(nodes_file_name) as fp:
@@ -1005,6 +1010,9 @@ class Graph:
             tobe_added_obj = self.add_obj_node(ast_node, js_type, value)
 
         self.add_edge(name_node, tobe_added_obj, {"type:TYPE": "NAME_TO_OBJ"})
+        # merge optimization
+        if self.affected_name_nodes:
+            self.affected_name_nodes.add(name_node)
 
         cs_windows = [self.cs_window[i] for i in self.cs_window]
         if not self.client_side:
@@ -1047,6 +1055,9 @@ class Graph:
             # we just add a obj to scope
             tobe_added_obj = self.add_obj_node(ast_node, js_type, value)
         self.add_edge(name_node, tobe_added_obj, {"type:TYPE": "NAME_TO_OBJ"})
+         # merge optimization
+        if self.affected_name_nodes:
+            self.affected_name_nodes.add(name_node)
 
         if not self.client_side:
             if combined and scope == self.BASE_SCOPE:
@@ -1078,6 +1089,9 @@ class Graph:
             tobe_added_obj = self.add_obj_node(ast_node, js_type, value)
 
         self.add_edge(name_node, tobe_added_obj, {"type:TYPE": "NAME_TO_OBJ"})
+         # merge optimization
+        if self.affected_name_nodes:
+            self.affected_name_nodes.add(name_node)
 
         return tobe_added_obj
 
@@ -1350,6 +1364,9 @@ class Graph:
                         # if no addition, add a deletion edge
                         self.add_edge(name_node, obj,{'type:TYPE':
                         'NAME_TO_OBJ', 'branch': BranchTag(branch, mark='D')})
+                        # merge optimization
+                        if self.affected_name_nodes:
+                            self.affected_name_nodes.add(name_node)
                 else:
                     # do not use "remove_edge", which cannot remove all edges
                     self.remove_all_edges_between(name_node, obj)
@@ -1361,6 +1378,9 @@ class Graph:
                 "branch": BranchTag(branch, mark='A')})
             else:
                 self.add_edge(name_node, obj, {"type:TYPE": "NAME_TO_OBJ"})
+             # merge optimization
+            if self.affected_name_nodes:
+                self.affected_name_nodes.add(name_node)
 
     def get_obj_def_ast_node(self, obj_node, aim_type=None):
         """
@@ -1420,6 +1440,9 @@ class Graph:
                 for j in self.get_out_edges(prop_name_node, edge_type='NAME_TO_OBJ'):
                     self.add_edge(new_prop_name_node, j[1],
                         {'type:TYPE': 'NAME_TO_OBJ'})
+                    # merge optimization
+                    if self.affected_name_nodes:
+                        self.affected_name_nodes.add(new_prop_name_node)
                 continue
             # copy property object nodes
             for j in self.get_out_edges(prop_name_node, edge_type='NAME_TO_OBJ'):
@@ -1433,9 +1456,15 @@ class Graph:
                     # self.add_node(new_prop_obj_node, self.get_node_attr(j[1])) # ?
                     self.add_edge(new_prop_name_node, new_prop_obj_node,
                         {'type:TYPE': 'NAME_TO_OBJ'})
+                    # merge optimization
+                    if self.affected_name_nodes:
+                        self.affected_name_nodes.add(new_prop_name_node)
                 else:
                     self.add_edge(new_prop_name_node, j[1],
                         {'type:TYPE': 'NAME_TO_OBJ'})
+                    # merge optimization
+                    if self.affected_name_nodes:
+                        self.affected_name_nodes.add(new_prop_name_node)
         # copy OBJ_DECL edges
         for e in self.get_out_edges(obj_node, edge_type='OBJ_DECL'):
             self.add_edge(new_obj_node, e[1], {'type:TYPE': 'OBJ_DECL'})
@@ -1939,36 +1968,17 @@ class Graph:
         """
         return self.covered_stat
 
-    def get_total_num_statements(self):
-        """
-        return the total number of statements of AST
-        """
-        if len(self.all_stat) != 0:
-            return len(self.all_stat)
-
-        all_nodes = self.get_all_nodes()
-        for n in all_nodes:
-            if 'type' in all_nodes[n]:
-                if 'AST_' in all_nodes[n]['type'] and self.is_statement(n):
-                    self.all_stat.add(n)
-        # print('len(self.all_stat): ', len(self.all_stat))
-        return len(self.all_stat)
-
-    def get_all_stat(self):
-        self.get_total_num_statements()
-        return self.all_stat
-
-    def get_header_num_statements(self):
-        if len(self.header_stat) != 0:
-            return len(self.header_stat)
-
+    def stmt_cnt_ini(self):
+        # initialize self.all_stat and self.header_stat
         all_nodes = self.get_all_nodes()
         threshold = 0
         for n in all_nodes:
             if 'type' in all_nodes[n] and 'AST_' in all_nodes[n]['type'] and self.is_statement(n):
+                self.all_stat.add(n)
+
                 filepath = self.get_node_file_path(n)
                 # print("filepath: ", filepath)
-                if "/bg.js" in filepath:
+                if "/bg.js" or "/wars.js" in filepath:
                     threshold = self.bg_header_lines
                 elif "/cs" in filepath:
                     threshold = self.cs_header_lines
@@ -1982,11 +1992,20 @@ class Graph:
                             self.header_stat.add(n)
                     except:
                         pass
-        # print('len(self.all_stat): ', len(self.all_stat))
+        
+        self.all_but_header_stmt = self.all_stat - self.header_stat
+
+
+    def get_total_num_statements(self):
+        return len(self.all_stat)
+
+    def get_all_stat(self):
+        return self.all_stat
+
+    def get_header_num_statements(self):
         return len(self.header_stat)
 
     def get_header_stat(self):
-        self.get_header_num_statements()
         return self.header_stat
 
     def get_total_num_functions(self):
@@ -2087,9 +2106,6 @@ class Graph:
         return num
 
     def get_code_cov(self):
-        # print(self.get_total_num_statements())
-        # print(self.get_total_num_statements() - self.get_header_num_statements())
-        # print(len(self.covered_stat))
         whole_num = self.get_total_num_statements() - self.get_header_num_statements()
         if whole_num != 0:
             covered_stat_rate = 100 * len(self.covered_stat) / whole_num
@@ -2098,9 +2114,7 @@ class Graph:
         return covered_stat_rate
 
     def get_all_but_header_stmt(self):
-        header_stat = self.get_header_stat()
-        all_stat = self.get_all_stat()
-        return all_stat - header_stat
+        return self.all_but_header_stmt
 
 
     def record_code_cov(self, code_cov):
@@ -2110,6 +2124,13 @@ class Graph:
         with open(code_cov_measure_file, "a") as f:
             f.write(newline + "\n")
 
+    def mydata_to_graph(self):
+        self.cur_objs = self.mydata.cur_objs
+        self.cur_scope = self.mydata.cur_scope
+        self.cur_file_scope = self.mydata.cur_file_scope
+        self.cur_func = self.mydata.cur_func
+        self.cur_stmt = self.mydata.cur_stmt  # for building data flows
+        self.cur_file_path = self.mydata.cur_file_path  # deprecated, use G.get_cur_file_path()
     # ASToperators = [
     #                 'AST_ASSIGN': self.HandleAssign,
     #                 'AST_CALL': self.HandleASTCall,

@@ -41,6 +41,38 @@ def get_path_text(G, path, caller= None):
     res_path += cur_path_str2
     return res_path
 
+def get_path_text_progress(G, path, caller= None):
+    """
+    get the code by ast number
+    Args:
+        G: the graph
+        path: the path with ast nodes
+    Return:
+        str: a string with text path
+    """
+    res_path = ""
+    # cur_path_str1 = ""
+    cur_path_str2 = ""
+    for node in path:
+        cur_node_attr = G.get_node_attr(node)
+        if cur_node_attr.get('lineno:int') is None:
+            continue
+        # cur_path_str1 += cur_node_attr['lineno:int'] + '->'
+        start_lineno = int(cur_node_attr['lineno:int'])
+        end_lineno = int(cur_node_attr['endlineno:int']
+                        or start_lineno)
+        content = None
+        try:
+            content = G.get_node_file_content(node)
+        except Exception as e:
+            print(e)
+        if content is not None:
+            cur_path_str2 +=''.join(content[start_lineno:end_lineno + 1])
+    # cur_path_str1 += G.get_node_attr(caller)['lineno:int']
+    # G.logger.debug(cur_path_str1)
+    res_path += cur_path_str2
+    return res_path
+
 def traceback(G, vul_type, start_node=None):
     """
     traceback from the leak point, the edge is OBJ_REACHES

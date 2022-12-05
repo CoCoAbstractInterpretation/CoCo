@@ -5,6 +5,7 @@ import math
 from typing import Callable, List, Iterable
 from collections import defaultdict
 from src.core.esprima import esprima_parse
+import jsbeautifier
 from src.core.logger import loggers
 from src.plugins.internal.utils import register_func
 from .logger import loggers, sty
@@ -130,7 +131,7 @@ def parse_chrome_extension(G, path, dx, easy_test, start_node_id=0):
         if easy_test:
             header_path = 'crx_headers_easy'
         else:
-            header_path = 'crx_headers'
+            header_path = 'crx_headers_dx'
         generated_extension_dir = os.path.join(path, "opgen_generated_files")
         # verified the existence of the two scripts
         cs = os.path.join(path, 'content_scripts.js')
@@ -142,25 +143,26 @@ def parse_chrome_extension(G, path, dx, easy_test, start_node_id=0):
             filtered_js_files.insert(0, os.path.join(header_path, 'cs_header.js'))
             filtered_js_files.insert(0, os.path.join(header_path, 'jquery_header.js'))
             combine_files(os.path.join(generated_extension_dir, 'cs_0.js'), filtered_js_files)
-        bg = os.path.join(path, 'background.js')
-        if os.path.getsize(bg)==0:
-            with open(os.path.join(generated_extension_dir, 'bg.js'), "w") as f:
-                pass
+        if G.war:
+            war = os.path.join(path, 'wars.js')
+            if os.path.exists(war) and os.path.getsize(war) == 0:
+                with open(os.path.join(generated_extension_dir, 'wars.js'), "w") as f:
+                    pass
+            elif os.path.exists(war) and os.path.getsize(war) != 0:
+                filtered_js_files = [war]
+                filtered_js_files.insert(0, os.path.join(header_path, 'bg_header.js'))
+                filtered_js_files.insert(0, os.path.join(header_path, 'jquery_header.js'))
+                combine_files(os.path.join(generated_extension_dir, 'wars.js'), filtered_js_files)
         else:
-            filtered_js_files = [bg]
-            filtered_js_files.insert(0, os.path.join(header_path, 'bg_header.js'))
-            filtered_js_files.insert(0, os.path.join(header_path, 'jquery_header.js'))
-            combine_files(os.path.join(generated_extension_dir, 'bg.js'), filtered_js_files)
-        # if there is war file, treat it as background, but does not share the scope with background
-        war = os.path.join(path, 'wars.js')
-        if os.path.exists(war) and os.path.getsize(war) == 0:
-            with open(os.path.join(generated_extension_dir, 'wars.js'), "w") as f:
-                pass
-        elif os.path.exists(war) and os.path.getsize(war) != 0:
-            filtered_js_files = [war]
-            filtered_js_files.insert(0, os.path.join(header_path, 'bg_header.js'))
-            filtered_js_files.insert(0, os.path.join(header_path, 'jquery_header.js'))
-            combine_files(os.path.join(generated_extension_dir, 'wars.js'), filtered_js_files)
+            bg = os.path.join(path, 'background.js')
+            if os.path.getsize(bg)==0:
+                with open(os.path.join(generated_extension_dir, 'bg.js'), "w") as f:
+                    pass
+            else:
+                filtered_js_files = [bg]
+                filtered_js_files.insert(0, os.path.join(header_path, 'bg_header.js'))
+                filtered_js_files.insert(0, os.path.join(header_path, 'jquery_header.js'))
+                combine_files(os.path.join(generated_extension_dir, 'bg.js'), filtered_js_files)
     else:
         generated_extension_dir = None
         header_path = 'crx_headers_easy' if easy_test else 'crx_headers'
@@ -198,7 +200,10 @@ def combine_files(newfile, files):
     result = ''
     # print('=======newfile=======', newfile)
     for file in files:
-        # print(file)
+        # beautify_file first
+        # res = jsbeautifier.beautify_file(file)
+        # with open(file, "w") as fin:
+        #     fin.write(res)
         try:
             with open(file, errors='ignore') as fin:
                 content = fin.read()
@@ -708,7 +713,6 @@ def add_contributes_to(G: Graph, sources, target, operation: str=None,
     if chain_tainted and tainted:
         G.set_node_attr(target, ('tainted', True))
         G.set_node_attr(target, ('taint_flow', taint_flow))
-
 
 def analyze_json(G, json_str, start_node_id=0, extra=None):
     # This function is almost the same as analyze_string,

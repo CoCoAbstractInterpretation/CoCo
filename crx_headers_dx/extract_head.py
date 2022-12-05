@@ -11,15 +11,12 @@ MarkSource = [i.strip() for i in c if "MarkSource" in i]
 TriggerEvent = [i.strip() for i in c if "TriggerEvent" in i]
 
 keywords = {"sink_function":sink_function, "MarkAttackEntry":MarkAttackEntry, "MarkSource":MarkSource, "TriggerEvent":TriggerEvent}
-cnt = 0
-all_api = set()
+
 for i in keywords:
 	print(i)
 	keywords[i] = [j for j in keywords[i] if "//" not in j]
 	for j in keywords[i]:
 		print(j)
-		all_api.add(j)
-print(len(list(all_api)))
 
 # print(sink_function)
 # print(MarkAttackEntry)

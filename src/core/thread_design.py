@@ -17,6 +17,8 @@ class thread_info():
         self.thread_age = thread_age
         self.handled = False
 
+    def see(self):
+        return str(self.flag.isSet())+str(self.running.isSet())
 
     def pause(self):
         self.flag.clear()     # 设置为False, 让线程阻塞

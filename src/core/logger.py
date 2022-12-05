@@ -75,6 +75,7 @@ class Loggers:
             self.tmp_res_logger = create_logger("result_tmp", file_name="results_tmp.log")
             # self.crx_logger = create_logger("crx_res", file_name="crx.log")
             self.crx_record_logger = create_logger("crx_record", file_name="crx_record.log")
+            self.thread_logger = create_logger("thread_logger", file_name="thread_logger.log")
     instance = None
     def __init__(self):
         if not Loggers.instance:

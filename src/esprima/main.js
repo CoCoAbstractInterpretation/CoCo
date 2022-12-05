@@ -1037,7 +1037,7 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                             dfs(param.left, nodeIdCounter, vParameterId, 1, currentFunctionId, {
                                 doNotUseVar: true
                             });
-                            // write the 2nd NULL virtual node (childnum = 2)
+                            // write the default value node (childnum = 2)
                             nodeIdCounter++;
                             relsStream.push([vParameterId, nodeIdCounter, parentOf].join(delimiter) + '\n');
                             dfs(param.right, nodeIdCounter, vParameterId, 2, currentFunctionId, {
@@ -1062,6 +1062,30 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                                 lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
                                 funcId: currentFunctionId
                             };
+                        } else {
+                            console.log(`  Warning: ${param.type} as a function parameter is not supported. Generating dummy nodes.`);
+                            nodeIdCounter++;
+                            relsStream.push([vParameterId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                            nodes[nodeIdCounter] = {
+                                label: 'AST_V',
+                                // type: 'ParameterType',
+                                phptype: 'NULL',
+                                childNum: 1,
+                                code: 'any',
+                                lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
+                                funcId: currentFunctionId
+                            };
+                            nodeIdCounter++;
+                            relsStream.push([vParameterId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                            nodes[nodeIdCounter] = {
+                                label: 'AST_V',
+                                // type: 'ParameterType',
+                                phptype: 'NULL',
+                                childNum: 2,
+                                code: 'any',
+                                lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
+                                funcId: currentFunctionId
+                            };
                         }
                         // finally update the childnum counter
                         vNodeChildNumberCounter++;
@@ -1070,7 +1094,7 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                         // rest parameter (variable length arguments)
                         phpflag = 'PARAM_VARIADIC';
                     } else if (param.type == 'ObjectPattern' || param.type == 'ArrayPattern' || param.type == 'AssignmentPattern'){
-                        console.log(`  Warning: uncompleted support for ${currentNode.type} as a function parameter, may have unexpected errors.`);
+                        console.log(`  Warning: uncompleted support for ${param.type} as a function parameter, may have unexpected errors.`);
                         let target = param;
                         if (param.type == 'AssignmentPattern'){
                             target = param.left;
@@ -1083,6 +1107,8 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                             for (let elem of target.elements){
                                 addParam(elem);
                             }
+                        } else if (target.type == 'Identifier'){
+                            addParam(param);
                         }
                     } else {
                         addParam(param);
@@ -1257,7 +1283,6 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                     */
                 }
                 // finally, write the ClassBody node
-
                 relsStream.push([vAstToplevelClass, classBodyId, 'PARENT_OF'].join(delimiter) + '\n');
                 nodes[classBodyId] = {
                     label: 'AST',
@@ -1510,10 +1535,20 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                 dfs(currentNode.key, nodeIdCounter, currentId, 1, currentFunctionId, {
                     doNotUseVar: true
                 });
+                let phpflag = '';
+                switch (currentNode.kind){
+                    case 'set':
+                        phpflag = 'JS_SETTER';
+                        break;
+                    case 'get':
+                        phpflag = 'JS_GETTER';
+                        break;
+                }
                 nodes[currentId] = {
                     label: 'AST',
                     type: currentNode.type,
                     phptype: 'AST_ARRAY_ELEM',
+                    phpflag: phpflag,
                     lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
                     childNum: childNum,
                     lineLocEnd: currentNode.loc ? currentNode.loc.end.line : null,
@@ -1660,6 +1695,17 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                     dfs(currentNode.id, nodeIdCounter, currentId, 0, currentFunctionId, {
                         doNotUseVar: true
                     });
+                } else {
+                    nodeIdCounter++;
+                    relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                    nodes[nodeIdCounter] = {
+                        label: 'AST_V',
+                        type: 'NULL',
+                        phptype: 'NULL',
+                        lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
+                        childNum: 0,
+                        funcId: currentFunctionId
+                    };
                 }
                 // docComment, insert a NULL node
                 nodeIdCounter++;
@@ -2102,6 +2148,7 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                     };
                 }
             } else {
+                relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
                 nodes[nodeIdCounter] = {
                     label: 'AST_V',
                     type: 'NULL',
@@ -2144,6 +2191,7 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                     });
                 }
             } else {
+                relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
                 nodes[nodeIdCounter] = {
                     label: 'AST_V',
                     type: 'NULL',
@@ -2337,8 +2385,24 @@ function dfs(currentNode, currentId, parentId, childNum, currentFunctionId, extr
                 // body
                 nodeIdCounter++;
                 childNumberCounter++;
-                relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
-                dfs(currentNode.body, nodeIdCounter, currentId, 3, currentFunctionId, null);
+                if (currentNode.body && currentNode.body.type == 'BlockStatement'){
+                    relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                    dfs(currentNode.body, nodeIdCounter, currentId, 3, currentFunctionId, null);
+                } else {
+                    relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                    let vAstBodyId = nodeIdCounter;
+                    nodeIdCounter++;
+                    relsStream.push([currentId, nodeIdCounter, parentOf].join(delimiter) + '\n');
+                    dfs(currentNode.body, nodeIdCounter, vAstBodyId, 0, currentFunctionId, {childNumberCounter: 0} );
+                    nodes[vAstBodyId] = {
+                        label: 'AST',
+                        type: 'BlockStatement',
+                        phptype: 'AST_STMT_LIST',
+                        lineLocStart: currentNode.loc ? currentNode.loc.start.line : null,
+                        childNum: 3,
+                        funcId: currentFunctionId
+                    };
+                }
                 nodes[currentId] = {
                     label: 'AST',
                     type: currentNode.type,
@@ -3171,7 +3235,6 @@ if (program.search){
             walkDir(dirname, null, analyze);
         }
     }
-
 }
 
 // analyze any required packages

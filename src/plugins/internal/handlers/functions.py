@@ -708,7 +708,7 @@ def call_function(G, func_objs, args=[], this=NodeHandleResult(), extra=None,
             else:
                 logger.log(ATTENTION, f'Running Python function {func_obj} {python_func}...')
                 try:
-                    logger.info(_args)
+                    # logger.info(_args)
                     h = python_func(G, caller_ast,
                                     ExtraInfo(extra, branches=next_branches), _this, *_args)
                     branch_returned_objs = h.obj_nodes
@@ -982,12 +982,12 @@ def call_function(G, func_objs, args=[], this=NodeHandleResult(), extra=None,
                 G.get_node_attr(func_ast).get('type') in [
             'AST_FUNC_DECL', 'AST_CLOSURE', 'AST_METHOD']:
             caller_cpg = G.find_nearest_upper_CPG_node(caller_ast)
-            logger.info(sty.fg.li_magenta + sty.ef.inverse + "CALLS" +
-                        sty.rs.all + " {} -> {} (Line {} -> Line {}) {}".format(
-                caller_cpg, func_ast,
-                G.get_node_attr(caller_cpg).get('lineno:int'),
-                G.get_node_attr(func_ast).get('lineno:int') or '?',
-                func_name))
+            # logger.info(sty.fg.li_magenta + sty.ef.inverse + "CALLS" +
+            #             sty.rs.all + " {} -> {} (Line {} -> Line {}) {}".format(
+            #     caller_cpg, func_ast,
+            #     G.get_node_attr(caller_cpg).get('lineno:int'),
+            #     G.get_node_attr(func_ast).get('lineno:int') or '?',
+            #     func_name))
             # add a call edge from the expression to the function definition
             # G.add_edge_if_not_exist(
             #     caller_ast, func_ast, {"type:TYPE": "CALLS"})

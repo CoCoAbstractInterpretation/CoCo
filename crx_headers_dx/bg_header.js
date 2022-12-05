@@ -1,100 +1,15 @@
-// jquery
-//fetch
-fetch_obj = function() {}
-
-fetch = function(resource, options) {
-    sink_function(resource, "fetch_resource_sink");
-    sink_function(options.url, "fetch_options_sink");
-    return new fetch_obj();
-}
-
-fetch_obj.prototype.then = function(callback) {
-    var responseText = 'data_from_fetch';
-    MarkSource(responseText, 'fetch_source');
-    callback(responseText);
-    return this;
-}
-
-// jqXHR
-$.ajax = function(url, settings) {
-    if (typeof url == "string") {
-        sink_function(url, 'jQuery_ajax_url_sink');
-        sink_function(settings.data, 'jQuery_ajax_settings_data_sink');
-        if (settings.beforeSend) {
-            settings.beforeSend();
-        }
-        if (settings.success) {
-            var jQuery_ajax_result_source = 'data_form_jq_ajax';
-            MarkSource(jQuery_ajax_result_source, 'jQuery_ajax_result_source');
-            settings.success(jQuery_ajax_result_source);
-        }
-    } else {
-        sink_function(url.url, 'jQuery_ajax_settings_url_sink');
-        sink_function(url.data, 'jQuery_ajax_settings_data_sink');
-        if (url.complete) {
-            url.complete(xhr, textStatus);
-        }
-        if (url.success) {
-            var jQuery_ajax_result_source = 'data_form_jq_ajax';
-            MarkSource(jQuery_ajax_result_source, 'jQuery_ajax_result_source');
-            url.success(jQuery_ajax_result_source);
-        }
-    }
-}
-// jQuery.get( url [, data ] [, success ] [, dataType ] )
-// data: Type: PlainObject or String
-// success: Type: Function( PlainObject data, String textStatus, jqXHR jqXHR )
-// dataType: Type: String
-$.get = function(url, success) {
-    var responseText = 'data_from_url_by_get';
-    MarkSource(responseText, 'jQuery_get_source');
-    sink_function(url, 'jQuery_get_url_sink');
-    success(responseText);
-    return new jqXHR();
-}
-// jQuery.post( url [, data ] [, success ] [, dataType ] )
-$.post = function(url, data, success) {
-    var responseText = 'data_from_url_by_post';
-    MarkSource(responseText, 'jQuery_post_source');
-    sink_function(data, 'jQuery_post_data_sink');
-    sink_function(url, 'jQuery_post_url_sink');
-    success(responseText);
-    return new jqXHR();
-}
-
-// =========XMLHttpRequest======
-function XMLHttpRequest() {};
-
-XMLHttpRequest.prototype.open = function(method, url, async, user, psw) {
-    sink_function(url, 'XMLHttpRequest_url_sink');
-};
-
-// if msg is not none, used for POST requests
-XMLHttpRequest.prototype.send = function(msg) {
-    if (msg != undefined) {
-        sink_function(msg, 'XMLHttpRequest_post_sink');
-    }
-};
-
-XMLHttpRequest.prototype.responseText = 'sensitive_responseText';
-XMLHttpRequest.prototype.responseXML = 'sensitive_responseXML';
-MarkSource(XMLHttpRequest.prototype.responseText, 'XMLHttpRequest_responseText_source');
-MarkSource(XMLHttpRequest.prototype.responseXML, 'XMLHttpRequest_responseXML_source');
-
-XHR = XMLHttpRequest;
-
 //  ========= window ========= 
 
 // targetWindow.postMessage(message, targetOrigin, [transfer]);
-// window.postMessage = function(message, targetOrigin, [transfer]){
-//     sink_function(message, 'window_postMessage_sink');
-// };
+window.postMessage = function(message, targetOrigin, [transfer]) {
+    sink_function(message, 'bg_window_postMessage_sink');
+};
 
 // // target.addEventListener(type, listener [, options]);
 // // the 'e' parameter passed to listener can be ignored, otherwise, it is the event object
-// window.addEventListener = function(type, listener,  [options]){
-//     MarkAttackEntry('cs_window_eventListener_' + type, listener);
-// };
+window.addEventListener = function(type, listener, [options]) {
+    MarkAttackEntry('bg_window_eventListener_' + type, listener);
+};
 
 
 window.top = new Object();
@@ -210,9 +125,6 @@ function Tab() {
 function Chrome() {}
 
 Chrome.prototype.runtime = new Object();
-// for deprecated APIs
-Chrome.prototype.extension = Chrome.prototype.runtime;
-Chrome.prototype.extension.onRequest = Chrome.prototype.runtime.onMessage;
 
 Chrome.prototype.runtime.onInstalled = new Object();
 // this function be called righrt after all the 
@@ -702,6 +614,15 @@ chrome.prototype.browserAction.onClicked.addListener = function(callback) {
     var tab = new Tab();
     callback(tab);
 }
+
+// for deprecated APIs
+Chrome.prototype.extension = Chrome.prototype.runtime;
+Chrome.prototype.extension.onRequest = Chrome.prototype.runtime.onMessage;
+
+
+
+// 
+// 
 chrome = new Chrome();
 _ = chrome;
 chrome.experimental.cookies = chrome.cookies;

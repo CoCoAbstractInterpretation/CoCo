@@ -66,9 +66,6 @@ Port.prototype.postMessage = function(msg) {
 function Chrome() {}
 
 Chrome.prototype.runtime = new Object();
-// for deprecated APIs
-Chrome.prototype.extension = Chrome.prototype.runtime;
-Chrome.prototype.extension.sendRequest = Chrome.prototype.runtime.sendMessage;
 
 // chrome.runtime.sendMessage(
 //   extensionId?: string,
@@ -198,6 +195,11 @@ Chrome.prototype.storage.local.clear = function(callback) {
     sink_function('chrome_storage_local_clear_sink');
     callback();
 };
+
+// for deprecated APIs
+Chrome.prototype.extension = Chrome.prototype.runtime;
+Chrome.prototype.extension.sendRequest = Chrome.prototype.runtime.sendMessage;
+
 
 chrome = new Chrome();
 _ = chrome;

@@ -128,6 +128,7 @@ class HandleIf(Handler):
             current_thread = threading.current_thread()
             with G.thread_info_lock:
                 cur_info = self.G.thread_infos[current_thread.name]
+                cur_info.pause()
             son_age = cur_info.thread_age
             cv = Condition()
             for idx, if_elem in enumerate(if_elems):
@@ -136,40 +137,31 @@ class HandleIf(Handler):
                 # print("depth: ", depth)
                 # print("son_age: ", son_age+G.beta*depth)
                 t = emit_thread(G, run_if_elem_pq, args, thread_age=son_age+G.beta*depth)
-                """
-                t = Thread(target=run_if_elem_pq, args=(if_elem, idx, G.mydata.pickle_up()))
-                info = thread_info(thread=t, last_start_time=time.time_ns(), thread_age=son_age)
-                info.pause()
-                with G.thread_info_lock:
-                    G.thread_infos[t.name] = info
-                t.start()
-                with G.pq_lock:
-                    G.pq.append(info)
-                    G.pq.sort(key=lambda x: x.thread_age, reverse=False)
-                """
                 with G.branch_son_dad_lock:
-                    G.branch_son_dad[t.name] = [threading.current_thread(), cv]
+                    G.branch_son_dad[t.name] = [current_thread, cv]
             with cv:
                 with G.wait_queue_lock:
                     G.wait_queue.add(cur_info)
-                with G.work_queue_lock:
-                    if cur_info in G.work_queue:
-                        G.work_queue.remove(cur_info)
-                with G.pq_lock:
-                    if cur_info in G.pq:
-                        G.pq.remove(cur_info)
+                with G.running_queue_lock:
+                    if cur_info in G.running_queue:
+                        G.running_queue.remove(cur_info)
+                with G.ready_queue_lock:
+                    if cur_info in G.ready_queue:
+                        G.ready_queue.remove(cur_info)
                 # print(threading.current_thread().name + ': father waiting')
                 cv.wait()
                 # print(threading.current_thread().name + ': father finish waiting')
                 with G.wait_queue_lock:
                     G.wait_queue.remove(cur_info)
-                with G.work_queue_lock:
-                    G.work_queue.add(cur_info)
-                # tmp = [i.thread_self for i in G.work_queue]
+                with G.running_queue_lock:
+                    cur_info.resume()
+                    G.running_queue.add(cur_info)
+                # tmp = [i.thread_self for i in G.running_queue]
                 # print('%%%%%%%%%work in condition: ', tmp)
-            if G.policy==3:
-                with G.thread_info_lock:
-                    self.G.thread_infos[current_thread.name].copy = True
+                if G.policy==3:
+                    print("policy 3 notified", cur_info.thread_self.name)
+                    with G.thread_info_lock:
+                        self.G.thread_infos[current_thread.name].copy_thread = True
                 # time.sleep(1)
             # print('debug merge',threading.current_thread().name, stmt_id, parent_branch)
             branch_num_counter = len(if_elems)
@@ -197,9 +189,9 @@ class HandleConditional(Handler):
         loggers.main_logger.debug(f'Ternary operator: {test} ? {consequent} : {alternate}')
         possibility, deterministic = check_condition(G, test, extra)
         ### Jianjia not go both ways all the time
-        if deterministic and possibility == 1:
+        if deterministic and possibility == 1 and not G.dx:
             return self.internal_manager.dispatch_node(consequent, extra)
-        elif deterministic and possibility == 0:
+        elif deterministic and possibility == 0 and not G.dx:
             return self.internal_manager.dispatch_node(alternate, extra)
         else:
             h1 = self.internal_manager.dispatch_node(consequent, extra)

@@ -14,7 +14,7 @@ from itertools import chain, product
 from math import isnan
 import math
 from typing import Tuple
-
+import time
 
 logger = loggers.main_logger
 
@@ -192,13 +192,135 @@ def setup_global_functions(G: Graph):
     encode_uri_component = G.add_blank_func_to_scope('encodeURIComponent', G.get_cur_window_scope(), string_returning_func)
     escape = G.add_blank_func_to_scope('escape', G.get_cur_window_scope(), string_returning_func)
     unescape = G.add_blank_func_to_scope('unescape', G.get_cur_window_scope(), string_returning_func)
-    set_timeout = G.add_blank_func_to_scope('setTimeout', G.get_cur_window_scope(), func_calling_func)
+    # set_timeout = G.add_blank_func_to_scope('setTimeout', G.get_cur_window_scope(), func_calling_func)
     clear_timeout = G.add_blank_func_to_scope('clearTimeout', G.get_cur_window_scope(), blank_func)
     set_interval = G.add_blank_func_to_scope('setInterval', G.get_cur_window_scope(), func_calling_func)
     clear_interval = G.add_blank_func_to_scope('clearInterval', G.get_cur_window_scope(), blank_func)
 
     require = G.add_blank_func_to_scope('require', G.get_cur_window_scope(), handle_require)
-    #jseval = G.add_blank_func_to_scope('eval', G.get_cur_window_scope(), opgen.handle_eval)
+    jseval = G.add_blank_func_to_scope('jseval', G.get_cur_window_scope(), handle_eval)
+
+
+def analyze_string(G, source_code, start_node_id=None, generate_graph=False,
+    expression=False, caller_ast=None):
+    from src.core.esprima import esprima_parse
+    if start_node_id is None:
+        if G.thread_version:
+            with G.cur_id_lock:
+                start_node_id = G.cur_id
+        else:
+            start_node_id = G.cur_id
+    args = ['-n', str(start_node_id), '-o', '-']
+    if expression:
+        args = ['-e'] + args 
+    result = esprima_parse('-', args,
+        input=source_code, print_func=logger.info)
+    # print(result)
+    with G.graph_lock:
+        G.import_from_string(result)
+    # find the correct parent node and add an edge from parent to the string
+    # for chrome.tabs.executeScript, it's the content scope
+    tmp_scope = G.cs_scopes[0]
+    tmp_ast = G.get_child_nodes(tmp_scope, "SCOPE_TO_AST")[0]
+    tmp_stmt_list = G.get_child_nodes(tmp_ast, "PARENT_OF")[0]
+    with G.graph_lock:
+        G.add_edge(tmp_stmt_list, str(start_node_id),{'type:TYPE': 'PARENT_OF'})
+    
+    if generate_graph:
+        from src.core.opgen import generate_obj_graph
+        generate_obj_graph(G, str(start_node_id))
+    else:
+        return str(start_node_id)
+
+
+def js_eval(G: Graph, exp, extra=ExtraInfo(),caller_ast=None):
+    from src.plugins.manager_instance import internal_manager
+    if G.thread_version:
+        with G.cur_id_lock:
+            root_node = str(G.cur_id)
+    else:
+        root_node = str(G.cur_id)
+    result = None
+    # try:
+    analyze_string(G, exp, expression=True, caller_ast=caller_ast)
+    # run as the last statement in AST_STMT_LIST
+    # parent_scope is file_scope
+    tmp_cs_scope = G.cs_scopes[0]
+    tmp_block_scope = G.get_child_nodes(tmp_cs_scope, "PARENT_SCOPE_OF")[0]
+    if G.thread_version:
+        G.mydata.cur_scope = tmp_block_scope
+    else:
+        G.cur_scope = tmp_block_scope
+    if G.cfg_stmt is not None:
+        G.add_edge_if_not_exist(G.cfg_stmt, root_node, {"type:TYPE": "FLOWS_TO"})
+    if G.thread_version:
+        G.mydata.cur_stmt = root_node
+    else:
+        G.cur_stmt = root_node
+    G.cfg_stmt = root_node
+    result = internal_manager.dispatch_node(root_node, extra)
+    result.ast_node = root_node
+    if G.thread_version:
+        G.mydata.cur_scope = tmp_cs_scope
+    else:
+        G.cur_scope = tmp_block_scope
+    # except Exception as e:
+    #     result = NodeHandleResult(value=[wildcard])
+    return result
+
+def handle_eval(G: Graph, caller_ast, extra, _, strings, *args):
+    returned_values = []
+    returned_value_sources = []
+    returned_objs = []
+    used_objs = []
+    num_of_branches = 0
+    branches = extra.branches
+    for i, value in enumerate(strings.values):
+        if type(value) == str and value != wildcard:
+            if not G.single_branch:
+                branches = branches + [BranchTag(
+                    point=f'Eval{caller_ast}', branch=num_of_branches)]
+                num_of_branches += 1
+            result = js_eval(G, value, ExtraInfo(branches=branches))
+            returned_values.extend(result.values)
+            returned_value_sources.extend(result.value_sources)
+            returned_objs.extend(result.obj_nodes)
+            used_objs.extend(strings.value_sources[i])
+        else:
+            returned_values.append(value)
+            returned_value_sources.append(strings.value_sources[i])
+            # workaround for new trace rule? (data flow needs to be built)
+            used_objs.extend(strings.value_sources[i])
+    for obj in strings.obj_nodes:
+        value = G.get_node_attr(obj).get('code')
+        if value == wildcard or G.get_node_attr(obj).get('type') == 'string':
+            value = G.get_node_attr(obj).get('code')
+            if not G.single_branch:
+                branches = branches + [BranchTag(
+                    point=f'Eval{caller_ast}', branch=num_of_branches)]
+                num_of_branches += 1
+            if value == wildcard:
+                result = NodeHandleResult(values=[wildcard],
+                                          value_sources=[obj])
+            else:
+                result = js_eval(G, value, ExtraInfo(branches=branches))
+            returned_values.extend(result.values)
+            returned_value_sources.extend(result.value_sources + [obj])
+            returned_objs.extend(result.obj_nodes)
+            used_objs.append(obj)
+        else:
+            returned_objs.append(obj)
+    if not G.single_branch:
+        from src.plugins.internal.utils import merge
+        merge(G, f'Eval{caller_ast}', num_of_branches,
+            parent_branch=branches.get_last_choice_tag())
+
+    for arg in args: # for test use only, eval shouldn't have so many args
+        used_objs.extend(chain(*(arg.value_sources)))
+        used_objs.extend(arg.obj_nodes)
+    return NodeHandleResult(obj_nodes=returned_objs, used_objs=used_objs,
+        values=returned_values, value_sources=returned_value_sources)
+
 
 
 def array_p_for_each(G: Graph, caller_ast, extra, array=NodeHandleResult(), callback=NodeHandleResult(), this=None):
@@ -241,32 +363,53 @@ def array_p_for_each_value(G: Graph, caller_ast, extra, array=NodeHandleResult()
             print(e)
     loop_var_name = ','.join(loop_var_names)
     for arr in array.obj_nodes:
-        name_nodes = G.get_prop_name_nodes(arr)
-        for name_node in name_nodes:
-            name = G.get_node_attr(name_node).get('name')
-            if not is_int(name):
-                continue
-            obj_nodes = G.get_obj_nodes(name_node, branches=extra.branches)
-            if str(name).startswith('Obj#'):
-                name_obj_node = name[4:]
-                index_arg = NodeHandleResult(obj_nodes=[name_obj_node])
-            else:
-                index_arg = NodeHandleResult(values=[float(name)])
-            obj_nodes_log = ', '.join([f'{obj}: {G.get_node_attr(obj).get("code")}' for obj in obj_nodes])
-            logger.debug(f'Array forEach callback arguments: index={name}, obj_nodes={obj_nodes_log}, array={arr}')
-            def add_for_stack(G, **kwargs):
-                nonlocal name, name_nodes, array
-                # full functional for-stack
-                # (type, ast node, scope, loop var name, loop var value, loop var value list, loop var origin list)
-                tmp_cur_scope = G.cur_scope if not G.thread_version else G.mydata.cur_scope
-                G.for_stack.append(('array for each', caller_ast, tmp_cur_scope, loop_var_name, name, G.get_prop_obj_nodes(arr, numeric_only=True), array.obj_nodes))
+        # if array.forEach, array is wildcard from a tainted source
+        attr = G.get_node_attr(arr)
+        from src.plugins.internal.utils import is_wildcard_obj
+        if "taint_flow" in attr and is_wildcard_obj(G, arr):
+            added_name_node = G.add_prop_name_node(wildcard, arr)
+            added_obj = G.add_obj_to_name_node(added_name_node,
+                js_type='object' if G.check_proto_pollution or G.check_ipt
+                else None, value=wildcard, ast_node=caller_ast)                    
+            G.set_node_attr(added_obj, ('tainted', True))
+            from src.plugins.internal.utils import copy_taint_flow
+            taint_flow = copy_taint_flow(attr['taint_flow'])
+            for flow in taint_flow:
+                flow[0].append(added_obj)
+                G.set_node_attr(added_obj, ('taint_flow', taint_flow))
+            index_arg = NodeHandleResult(values=[wildcard])
             call_function(G, callback.obj_nodes,
-                args=[NodeHandleResult(name_nodes=[name_node], name=name,
-                    obj_nodes=obj_nodes), index_arg, 
+                args=[NodeHandleResult(name_nodes=[added_name_node], name=wildcard,
+                    obj_nodes=[added_obj]), index_arg, 
                     NodeHandleResult(name=array.name, obj_nodes=[arr])],
-                this=this, extra=extra, caller_ast=caller_ast,
-                python_callback=add_for_stack)
-            G.for_stack.pop()
+                this=this, extra=extra, caller_ast=caller_ast)
+        else:
+            name_nodes = G.get_prop_name_nodes(arr)
+            for name_node in name_nodes:
+                name = G.get_node_attr(name_node).get('name')
+                if not is_int(name):
+                    continue
+                obj_nodes = G.get_obj_nodes(name_node, branches=extra.branches)
+                if str(name).startswith('Obj#'):
+                    name_obj_node = name[4:]
+                    index_arg = NodeHandleResult(obj_nodes=[name_obj_node])
+                else:
+                    index_arg = NodeHandleResult(values=[float(name)])
+                obj_nodes_log = ', '.join([f'{obj}: {G.get_node_attr(obj).get("code")}' for obj in obj_nodes])
+                logger.debug(f'Array forEach callback arguments: index={name}, obj_nodes={obj_nodes_log}, array={arr}')
+                def add_for_stack(G, **kwargs):
+                    nonlocal name, name_nodes, array
+                    # full functional for-stack
+                    # (type, ast node, scope, loop var name, loop var value, loop var value list, loop var origin list)
+                    tmp_cur_scope = G.cur_scope if not G.thread_version else G.mydata.cur_scope
+                    G.for_stack.append(('array for each', caller_ast, tmp_cur_scope, loop_var_name, name, G.get_prop_obj_nodes(arr, numeric_only=True), array.obj_nodes))
+                call_function(G, callback.obj_nodes,
+                    args=[NodeHandleResult(name_nodes=[name_node], name=name,
+                        obj_nodes=obj_nodes), index_arg, 
+                        NodeHandleResult(name=array.name, obj_nodes=[arr])],
+                    this=this, extra=extra, caller_ast=caller_ast,
+                    python_callback=add_for_stack)
+                G.for_stack.pop()
     return NodeHandleResult(obj_nodes=[G.undefined_obj])
 
 
@@ -984,7 +1127,10 @@ def object_p_to_string(G: Graph, caller_ast, extra, this: NodeHandleResult,
     returned_objs = []
     for obj in this.obj_nodes:
         # value = G.get_node_attr(obj).get('code')
-        string = G.add_obj_node(caller_ast, 'string', '[object Object]')
+        if G.get_node_attr(obj).get("type")=='array':
+            string = G.add_obj_node(caller_ast, 'string', '[object Array]') #Array
+        else:
+            string = G.add_obj_node(caller_ast, 'string', '[object Object]')
         add_contributes_to(G, [obj], string)
         returned_objs.append(string)
     return NodeHandleResult(obj_nodes=returned_objs, used_objs=this.obj_nodes)
@@ -1092,9 +1238,9 @@ def func_calling_func(G: Graph, caller_ast, extra, _, *args):
         results, _ = call_function(G, filtered_objs, extra=extra)
         used_objs.update(results.obj_nodes)
 
-    from src.plugins.internal.modeled_extension_builtins import sink_function_in_graph
-    code_obj_name = "setTimeout"
-    sink_function_in_graph(G, args, code_obj_name)
+    # from src.plugins.internal.modeled_extension_builtins import sink_function_in_graph
+    # code_obj_name = "setTimeout"
+    # sink_function_in_graph(G, args, code_obj_name)
 
     add_contributes_to(G, used_objs, dummy_return_obj)
     return NodeHandleResult(obj_nodes=[dummy_return_obj], used_objs=list(used_objs))

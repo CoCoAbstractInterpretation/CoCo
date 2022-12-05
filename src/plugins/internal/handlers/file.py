@@ -76,7 +76,7 @@ def run_toplevel_file(G: Graph, node_id):
         G.file_stack.append(file_path)
         print('G.file_stack', G.file_stack)
     else:
-        print('G.file_stack', file_path)
+        print('G.file_stack'+file_path+'\n')
     if G.thread_version:
         previous_file_path = G.mydata.cur_file_path
         G.mydata.cur_file_path = file_path
@@ -110,7 +110,7 @@ def run_toplevel_file(G: Graph, node_id):
     if G.client_side:
         # cs_0.js, bg.js
         # setup the window object before we start run the file
-        if 'bg.js' in file_path or ('war.js' in file_path and G.war):
+        if 'bg.js' in file_path or ('wars.js' in file_path and G.war):
             G.bg_scope = func_scope
             window_obj = G.add_obj_to_scope(name='window', scope=func_scope, combined=False)
             # add canHaveOnProperty for object.onload property

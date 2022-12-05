@@ -762,7 +762,11 @@ def merge(G, stmt, num_of_branches, parent_branch):
     if G.no_merge:
         return
     loggers.main_logger.debug(f'Merging branches in {stmt}')
-    name_nodes = G.get_node_by_attr('labels:label', 'Name')
+    # optimize merge algorithm
+    if G.thread_version:
+        name_nodes = G.affected_name_nodes
+    else:
+        name_nodes = G.get_node_by_attr('labels:label', 'Name')
     for u in name_nodes:
         for v in G.get_child_nodes(u, 'NAME_TO_OBJ'):
             created = [False] * num_of_branches
@@ -837,32 +841,35 @@ def merge(G, stmt, num_of_branches, parent_branch):
 
 def emit_thread(G: Graph, function, args, thread_age=1, is_event = False ):
     active_thread = [i for i in threading.enumerate() if not i.daemon]
-    if len(active_thread)==1 and len(G.work_queue)==0 and len(G.pq)==0 and len(G.wait_queue)==0:
+    if len(active_thread)==1 and len(G.running_queue)==0 and len(G.ready_queue)==0 and len(G.wait_queue)==0:
         from src.core.opgen import admin_threads
         admin_threads(G, function, args)
     else:
         t = Thread(target=function, args=args)
+        # print("new thread: " + str(t))
         if thread_age == -1:
             current_thread = threading.current_thread()
             with G.thread_info_lock:
                 cur_info = G.thread_infos[current_thread.name]
             thread_age = cur_info.thread_age + 5
             # print("thread_age ", thread_age)
+        if G.ablation_mode=="odgen-ext-co":
+            thread_age = 1 
         info = thread_info(thread=t, last_start_time=time.time(), thread_age=thread_age)
         if is_event:
             with G.thread_info_lock:
                 G.thread_infos[t.name] = info
             t.start()
-            with G.work_queue_lock:
-                G.work_queue.add(info)
+            with G.running_queue_lock:
+                G.running_queue.add(info)
         else:
             info.pause()
             with G.thread_info_lock:
                 G.thread_infos[t.name] = info
             t.start()
-            with G.pq_lock:
-                G.pq.append(info)
-                G.pq.sort(key=lambda x: x.thread_age, reverse=False)
+            with G.ready_queue_lock:
+                G.ready_queue.append(info)
+                G.ready_queue.sort(key=lambda x: x.thread_age, reverse=False)
         return t
 
 def copy_taint_flow(taint_flow):

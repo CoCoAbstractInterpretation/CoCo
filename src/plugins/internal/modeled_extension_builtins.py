@@ -7,6 +7,7 @@ import threading
 from src.core.checker import obj_traceback
 from src.plugins.internal.handlers.event_loop import attack_dic
 from src.core.utils import wildcard
+import time
 
 logger = loggers.main_logger
 
@@ -21,6 +22,7 @@ def setup_utils(G: Graph):
     G.add_blank_func_to_scope('MarkSink', scope=G.get_cur_window_scope(), python_func=MarkSink)
     G.add_blank_func_to_scope('MarkAttackEntry', scope=G.get_cur_window_scope(), python_func=MarkAttackEntry)
     G.add_blank_func_to_scope('debug_sink', scope=G.get_cur_window_scope(), python_func=debug_sink)
+    G.add_blank_func_to_scope('debug_thread', scope=G.get_cur_window_scope(), python_func=debug_thread)
     G.add_blank_func_to_scope('sink_function', scope=G.get_cur_window_scope(), python_func=sink_function)
 
 # event is a string
@@ -31,7 +33,7 @@ def RegisterFunc(G: Graph, caller_ast, extra, _, *args):
     cur_thread = threading.current_thread()
     # print(args)
     print('=========Register listener: '+ listener + ' in ' + cur_thread.name)
-    if G.thread_version:
+    if G.thread_version and G.ablation_mode in ["coco-single", "coco"]:
         register_event_check(G, listener, func)
     else:
         if listener in G.eventRegisteredFuncs:
@@ -58,7 +60,7 @@ def register_event_check(G:Graph, listener, func):
 def UnregisterFunc(G: Graph, caller_ast, extra, _, *args):
     event = args[0].values[0]
     func = args[1].obj_nodes[0]
-    if G.thread_version:
+    if G.thread_version and G.ablation_mode in ["coco-single", "coco"]:
         with G.eventRegisteredFuncs_lock:
             if event in G.eventRegisteredFuncs:
                 del G.eventRegisteredFuncs[event]
@@ -76,14 +78,14 @@ def TriggerEvent(G: Graph, caller_ast, extra, _, *args):
     # eventName = G.get_node_attr(args[0].obj_nodes[0])['code']
     eventName = args[0].values[0]
     info = args[1].obj_nodes[0]
-    event = {'eventName': eventName, 'info': info, 'extra':extra}
+    event = {'eventName': eventName, 'info': info, 'extra':extra, 'caller_ast':caller_ast}
     """for prop in G.get_prop_obj_nodes(event['info']):
         print(prop)
         for data in G.get_prop_obj_nodes(prop):
             print(G.get_prop_obj_nodes(data))"""
     # trigger event right away
     listener = G.event_listener_dic[eventName]
-    if G.thread_version:
+    if G.thread_version and G.ablation_mode in ["coco-single", "coco"]:
         with G.eventRegisteredFuncs_lock:
             listener_not_registered = True if listener not in G.eventRegisteredFuncs else False
         if listener_not_registered:
@@ -104,8 +106,12 @@ def TriggerEvent(G: Graph, caller_ast, extra, _, *args):
                 # print("happen > 5 times")
                 emit_thread(G, event_loop_threading, (G, event, G.mydata.pickle_up()), thread_age = -1)
             else:
-                print("emit_thread directly")
-                emit_thread(G, event_loop_threading, (G, event, G.mydata.pickle_up()))
+                print("TriggerEvent emit_thread directly")
+                current_thread = threading.current_thread()
+                with G.thread_info_lock:
+                    cur_info = G.thread_infos[current_thread.name]
+                thread_age = cur_info.thread_age
+                emit_thread(G, event_loop_threading, (G, event, G.mydata.pickle_up()), thread_age=thread_age)
     else:
         G.eventQueue.insert(0, event)
     return NodeHandleResult()
@@ -148,7 +154,7 @@ def MarkAttackEntry(G: Graph, caller_ast, extra, _, *args):
                     G.attacked = True
         #  attack right away!
         entry = [type, listener]
-        if G.thread_version:
+        if G.thread_version and G.ablation_mode in ["coco-single", "coco"]:
             thread_age = -1 if type == "bg_tabs_onupdated" else 1
             if entry[0] in attack_dic:
                 attack_func = attack_dic[entry[0]]
@@ -177,7 +183,7 @@ def MarkAttackEntryOnProperty(G: Graph, type, listener):
                     G.attacked = True
         #  attack right away!
         entry = [type, listener]
-        if G.thread_version:
+        if G.thread_version and G.ablation_mode in ["coco-single", "coco"]:
             if entry[0] in attack_dic:
                 attack_func = attack_dic[entry[0]]
                 emit_thread(G, attack_func, (G, entry, G.mydata.pickle_up()))
@@ -188,7 +194,10 @@ def MarkAttackEntryOnProperty(G: Graph, type, listener):
 
 def debug_sink(G: Graph, caller_ast, extra, _, *args):
     print('debug code reached')
+    print("In thread: ", threading.current_thread().name)
     print(args)
+    # loggers.thread_logger.info(int(args[0].values[0]))
+    print(args[0].values)
     sus_objs = set()
     for arg in args:
         for obj in arg.obj_nodes:
@@ -204,6 +213,11 @@ def debug_sink(G: Graph, caller_ast, extra, _, *args):
         print(G.get_node_attr(obj))
     return NodeHandleResult()
 
+
+def debug_thread(G: Graph, caller_ast, extra, _, *args):
+    loggers.thread_logger.info(int(args[0].values[0]))
+    
+
 # check the sink function
 def sink_function(G: Graph, caller_ast, extra, _, *args):
     sink_name = args[-1].values[0]
@@ -211,6 +225,7 @@ def sink_function(G: Graph, caller_ast, extra, _, *args):
     # print('sink function reached:', args[-1].values[0])
     # get sus_objs and sink_nam
     if len(args)>1:
+        # len(args)-1 is because the last arg is the name of the sink.
         for i in range(len(args)-1):
             arg = args[i]
             sus_objs.update(arg.obj_nodes)
@@ -228,7 +243,7 @@ def sink_function(G: Graph, caller_ast, extra, _, *args):
                 return NodeHandleResult()
         print(sty.fg.li_green + sty.ef.inverse + f'~~~tainted detected!~~~in extension: ' \
               + G.package_name + ' with ' + sink_name + sty.rs.all)
-        res = '~~~tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
+        res = str(time.time())+"----"+'tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
         res_dir = os.path.join(G.package_name, 'opgen_generated_files')
         with open(os.path.join(res_dir, G.result_file), 'a') as f:
             f.write(res)
@@ -265,7 +280,7 @@ def sink_function_in_graph(G: Graph, args, sink_name):
                 return NodeHandleResult()
         print(sty.fg.li_green + sty.ef.inverse + f'~~~tainted detected!~~~in extension: ' \
               + G.package_name + ' with ' + sink_name + sty.rs.all)
-        res = '~~~tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
+        res = str(time.time())+"----"+'tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
         res_dir = os.path.join(G.package_name, 'opgen_generated_files')
         with open(os.path.join(res_dir, G.result_file), 'a') as f:
             f.write(res)
@@ -293,6 +308,7 @@ invalid_taint  = [("cs_window_eventListener_message","window_postMessage_sink"),
                   ("XMLHttpRequest_responseText_source", "XMLHttpRequest_post_sink"),
                   ("cookies_source", "chrome_cookies_set_sink"),
                   ("cookie_source", "chrome_cookies_set_sink"),
+                  ("cookies_source", "chrome_cookies_remove_sink"),
                   # ("management_getAll_source", "management_setEnabled_id"),
                   # ("management_getAll_source", "management_setEnabled_enabled"),
                   ("storage_local_get_source", "chrome_storage_local_set_sink"),
@@ -404,7 +420,7 @@ extension_data_out = [
     "window_postMessage_sink",
     "bg_external_port_postMessage_sink",
     "sendResponseExternal_sink",
-
+    'externalNativePortpostMessage_sink',
     "document_write_sink",
     "JQ_obj_val_sink",
     "JQ_obj_html_sink",
@@ -450,6 +466,15 @@ def decide_valid_taint_flow(source_name, sink_name, attacked):
     return res
 
 
+def decide_valid_taint_flow_dx(source_name, sink_name, attacked):
+    res = True
+    if (source_name, sink_name) in invalid_taint:
+        res = False
+    if sink_name in ['chrome_tabs_create_sink']:
+        res = False
+    return res
+
+
 def check_taint(G, obj, sink_name, attacked):
     attrs = G.get_node_attr(obj)
     check_res = False
@@ -458,13 +483,17 @@ def check_taint(G, obj, sink_name, attacked):
         for flow in attrs['taint_flow']:
             path = flow[0]
             source_name = flow[1]
-            if not decide_valid_taint_flow(source_name, sink_name, attacked):
-                continue
-            res += str(flow) + '\n'
+            if not G.dx:
+                if not decide_valid_taint_flow(source_name, sink_name, attacked):
+                    continue
+            else:
+                if not decide_valid_taint_flow_dx(source_name, sink_name, attacked):
+                    continue
             ast_path = [G.get_obj_def_ast_node(node) for node in path]
             ast_path = [node for node in ast_path if node]
             from src.core.checker import get_path_text
-            res += '~~~tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
+            res += str(time.time())+"----"+'tainted detected!~~~in extension: ' + G.package_name + ' with ' + sink_name + '\n'
+            res += str(flow) + '\n'
             res += ('from ' + source_name + ' to ' + sink_name + '\n')
             # res += (str(ast_path) + '\n')
             # print(ast_path)

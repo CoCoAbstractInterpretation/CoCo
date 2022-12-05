@@ -49,7 +49,7 @@ class HandleFor(Handler):
                 G.get_node_attr(cond).get('code') + sty.rs.all, check_result,
                 deterministic))
             # avoid infinite loop
-            if (not deterministic and counter > 3) or check_result == 0 or counter > 100:
+            if (not deterministic and counter > 3) or check_result == 0 or counter > 5:
                 loggers.main_logger.debug('For loop {} finished'.format(node_id))
                 break
             simurun_block(G, body, branches=extra.branches) # run the body
