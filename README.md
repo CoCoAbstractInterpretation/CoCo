@@ -6,37 +6,29 @@ Concurrent Abstract Interpretation to analyze JavaScript code, specifically, bro
 
 ## Installation
 CoCo requires Python 3.7+ and Node.js 12+. To set up the environment, simply
-run `install.sh`.
+run `./install.sh`.
 
 ## Command line arguments
 Use the following arugments to run the tool:
 
 ```bash
-./single_run.sh [input_file] [-pq] [-thread_stmt]
+./single_run.sh [input_file] 
 ```
 
-| Argument | Description |
-| -------- | ----------- |
-| `input_file` | The extension file. |
-|  `-pq` | Run CoCo concurrent version |
-| `-thread_stmt` | Run CoCo with sequential timeout |
+`input_file` is the path to the extension source code directory.
+
 
 ## Examples
 We provide some examples in the `demos/` directory. To run, simply:
 ```shell
 $ ./single_run.sh demos/exec_code
 ```
-To run with concurrent version:
-```shell
-$ ./single_run.sh demos/concurrent -pq
-```
-Or add any arguments you like.
 
-You can try edit your own code to test, just modify the content in `demos/test` and
+You can also try to edit your own code to test, just modify the content in `demos/test` and run
 ```shell
 $ ./single_run.sh demos/test
 ```
 
 ## Results
-Results are stored in `extension_dir/opgen_generated_files/res.txt`
+Results are stored in `extension_dir/opgen_generated_files/used_time.txt`
 

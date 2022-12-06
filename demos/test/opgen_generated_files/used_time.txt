@@ -2177,3 +2177,113 @@ beta: 0
 gamma: 1
 demos/test finish within 1.236720085144043 seconds#### with code_cov 100.0% stmt covered####
 
+analysis starts
+2022-12-05 20:29:47.907399
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/test
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 0.1
+seq_timeout: 20
+policy: 1
+alpha: 0.2
+beta: 0.8
+gamma: 1
+ablation_mode: CoCo-single
+code_progress_html: False
+1670290188.6378639----test_graph starts
+demos/test finish within 14.396002054214478 seconds#### with code_cov 0% stmt covered####
+
+nothing detectedanalysis starts
+2022-12-05 20:31:33.633368
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/test
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 0.1
+seq_timeout: 20
+policy: 1
+alpha: 0.2
+beta: 0.8
+gamma: 1
+ablation_mode: CoCo-single
+code_progress_html: False
+1670290294.365438----test_graph starts
+1670290309.117378----tainted detected!~~~in extension: demos/test with chrome_storage_sync_set_sink
+(['12233', '12250', '12256'], 'bg_chrome_runtime_MessageExternal')
+from bg_chrome_runtime_MessageExternal to chrome_storage_sync_set_sink
+==========================
+$FilePath$demos/test/opgen_generated_files/bg.js
+Line 966	  if (request.data) {
+	request.data
+$FilePath$demos/test/opgen_generated_files/bg.js
+Line 967	    chrome.storage.sync.set({'access_token': request.data.access_token}, function() {
+	request.data.access_token
+
+~~taint detected
+demos/test finish within 14.788081884384155 seconds#### with code_cov 25.0% stmt covered####
+

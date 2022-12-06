@@ -130,3 +130,292 @@ beta: 0
 gamma: 1
 demos/eRail_in finish within 37.92264986038208 seconds#### with code_cov 66.0919540229885% stmt covered####
 
+analysis starts
+2022-12-05 20:17:19.920750
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/ajax
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 0.1
+seq_timeout: 20
+policy: 1
+alpha: 0.2
+beta: 0.8
+gamma: 1
+ablation_mode: CoCo-single
+code_progress_html: False
+1670289440.7873049----test_graph starts
+1670289467.874919----tainted detected!~~~in extension: demos/ajax with XMLHttpRequest_url_sink
+(['19306', '19316', '19600', '19950'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+1670289467.876062----tainted detected!~~~in extension: demos/ajax with XMLHttpRequest_url_sink
+(['19306', '19316', '19600', '19950', '19952'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+1670289467.9695702----tainted detected!~~~in extension: demos/ajax with jQuery_post_data_sink
+(['19306', '19316', '19600', '20968'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_data_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1066	        a.Method == "GET" ? x = x+1: $.post(a.URL,  a.post, function(b) {
+	a.post
+
+1670289467.970935----tainted detected!~~~in extension: demos/ajax with jQuery_post_url_sink
+(['19306', '19316', '19600', '19950'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+1670289467.971689----tainted detected!~~~in extension: demos/ajax with jQuery_post_url_sink
+(['19306', '19316', '19600', '19950', '19952'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+1670289468.879607----tainted detected!~~~in extension: demos/ajax with XMLHttpRequest_url_sink
+(['19306', '19316', '21217', '21565', '21567'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+1670289468.880755----tainted detected!~~~in extension: demos/ajax with XMLHttpRequest_url_sink
+(['19306', '19316', '21217', '21565'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to XMLHttpRequest_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+1670289468.980522----tainted detected!~~~in extension: demos/ajax with jQuery_post_data_sink
+(['19306', '19316', '21217', '22599'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_data_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1066	        a.Method == "GET" ? x = x+1: $.post(a.URL,  a.post, function(b) {
+	a.post
+
+1670289468.982039----tainted detected!~~~in extension: demos/ajax with jQuery_post_url_sink
+(['19306', '19316', '21217', '21565', '21567'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL.toLowerCase()
+
+1670289468.983129----tainted detected!~~~in extension: demos/ajax with jQuery_post_url_sink
+(['19306', '19316', '21217', '21565'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to jQuery_post_url_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 473	window.addEventListener("message", function(a) {
+	a
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/cs_0.js
+Line 474	    if (a.data != undefined) {
+	a.data
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1118	        if (a[b].url.toLowerCase().indexOf(plugdata.URL.toLowerCase()) > -1) {
+	plugdata.URL
+
+1670289471.969759----tainted detected!~~~in extension: demos/ajax with JQ_obj_val_sink
+(['20993', '21021', '21033', '21045', '23732'], 'jQuery_post_source')
+from jQuery_post_source to JQ_obj_val_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 310	    var responseText = 'data_from_url_by_post';
+	responseText = 'data_from_url_by_post'
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+
+1670289474.098442----tainted detected!~~~in extension: demos/ajax with JQ_obj_val_sink
+(['20993', '21021', '21033', '21045', '24576'], 'jQuery_post_source')
+from jQuery_post_source to JQ_obj_val_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 310	    var responseText = 'data_from_url_by_post';
+	responseText = 'data_from_url_by_post'
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+
+1670289476.377892----tainted detected!~~~in extension: demos/ajax with JQ_obj_val_sink
+(['20993', '21021', '21033', '21045', '25424'], 'jQuery_post_source')
+from jQuery_post_source to JQ_obj_val_sink
+==========================
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 310	    var responseText = 'data_from_url_by_post';
+	responseText = 'data_from_url_by_post'
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>")
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+$FilePath$demos/ajax/opgen_generated_files/bg.js
+Line 1068	            if (typeof b === "string") a.Data = b.replace(/<img .*?>/g, "").replace(/<form .*?>/g, "<form action=''>").replace(/<FORM .*?>/g, "<form action=''>");
+	
+

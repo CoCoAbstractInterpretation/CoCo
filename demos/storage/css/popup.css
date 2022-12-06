@@ -1,0 +1,40 @@
+body {
+    width: 300px;
+    overflow: hidden;
+}
+
+table img {
+    width: 38px;
+    height: auto;
+    vertical-align: middle;
+}
+
+table td {
+    font-weight: bold;
+}
+
+table th {
+    vertical-align: top;
+}
+
+h1 {
+    text-align: center;
+}
+
+h1 img {
+    vertical-align: top;
+}
+
+footer {
+    color: #bbb;
+    text-align: center;
+    margin-top: 2em;
+}
+
+footer a {
+    color: #aaa;
+}
+
+label {
+    display: block;
+}

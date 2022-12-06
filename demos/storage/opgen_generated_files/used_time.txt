@@ -1,3 +1,5 @@
+/media/data2/jianjia/extension_data/unzipped_extensions/gaoiiiehelhpkmpkolndijhiogfholcc timeout after 600 seconds with 0.0% stmt covered####analysis starts
+2022-12-05 20:35:57.813776
 All args:
 print: False
 vul_type: chrome_ext
@@ -20,9 +22,9 @@ export: None
 nodejs: False
 gc: False
 babel: None
-input_file: demos/ackpndpapmikcoklmcbigfgkiemohddk
+input_file: /Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc
 chrome_extension: True
-run_with_pq: False
+run_with_pq: True
 obj_traceback: False
 dx: False
 easy_test: False
@@ -35,54 +37,46 @@ war: False
 measure_thread: False
 measure_code_cov_progress: False
 time_slice: 0.1
-seq_timeout: 0.02
+seq_timeout: 20
 policy: 1
-alpha: 0
-beta: 0
+alpha: 0.2
+beta: 0.8
 gamma: 1
-demos/ackpndpapmikcoklmcbigfgkiemohddk finish within 1.8453960418701172 seconds#### with code_cov 77.41935483870968% stmt covered####
+ablation_mode: CoCo-single
+code_progress_html: False
+1670290558.798713----test_graph starts
+1670290582.178175----tainted detected!~~~in extension: /Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc with window_postMessage_sink
+(['13925'], 'storage_sync_get_source')
+from storage_sync_get_source to window_postMessage_sink
+==========================
+$FilePath$/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/opgen_generated_files/cs_0.js
+Line 395	        'key': 'value'
+	
 
-All args:
-print: False
-vul_type: chrome_ext
-prototype_pollution: False
-module: False
-exit: False
-single_branch: False
-run_all: False
-function_timeout: None
-timeout: None
-call_limit: 3
-entry_func: None
-list: None
-install: False
-run_env: ./tmp_env/
-no_file_based: False
-parallel: None
-auto_type: False
-export: None
-nodejs: False
-gc: False
-babel: None
-input_file: demos/ackpndpapmikcoklmcbigfgkiemohddk
-chrome_extension: True
-run_with_pq: False
-obj_traceback: False
-dx: False
-easy_test: False
-package_path: demos/
-autostop: False
-no_merge: False
-thread_stmt: False
-all_branch: False
-war: False
-measure_thread: False
-measure_code_cov_progress: False
-time_slice: 0.1
-seq_timeout: 0.02
-policy: 1
-alpha: 0
-beta: 0
-gamma: 1
-demos/ackpndpapmikcoklmcbigfgkiemohddk finish within 2.0121090412139893 seconds#### with code_cov 77.41935483870968% stmt covered####
+1670290582.178614----tainted detected!~~~in extension: /Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc with window_postMessage_sink
+(['13922'], 'storage_sync_get_source')
+from storage_sync_get_source to window_postMessage_sink
+==========================
+$FilePath$/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/opgen_generated_files/cs_0.js
+Line 394	    var storage_sync_get_source = {
+        'key': 'value'
+    };
+	
+
+1670290582.183866----tainted detected!~~~in extension: /Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc with chrome_storage_sync_set_sink
+(['13881', '13891', '13982'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to chrome_storage_sync_set_sink
+==========================
+$FilePath$/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/opgen_generated_files/cs_0.js
+Line 491	window.addEventListener("message", function (event) {
+	event
+$FilePath$/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/opgen_generated_files/cs_0.js
+Line 492	    if (event.data.jamakFlix && event.data.type) {
+	event.data
+$FilePath$/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/opgen_generated_files/cs_0.js
+Line 502	            chrome.storage.sync.set(event.data.setting, function (items) {
+	event.data.setting
+
+~~taint detected
+/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc finish within 23.520856142044067 seconds#### with code_cov 76.92307692307692% stmt covered####
 

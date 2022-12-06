@@ -174,3 +174,121 @@ beta: 0
 gamma: 1
 demos/demo_FromDocToPDF finish within 1.4481401443481445 seconds#### with code_cov 100.0% stmt covered####
 
+analysis starts
+2022-12-05 20:29:25.194698
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/topsites
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 0.1
+seq_timeout: 20
+policy: 1
+alpha: 0.2
+beta: 0.8
+gamma: 1
+ablation_mode: CoCo-single
+code_progress_html: False
+1670290165.928724----test_graph starts
+1670290181.1093109----tainted detected!~~~in extension: demos/topsites with window_postMessage_sink
+(['12538', '12594', '12613'], 'topSites_source')
+from topSites_source to window_postMessage_sink
+==========================
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 570	    var mostVisitedUrls_source = [{
+        title: 'title',
+        url: 'url'
+    }];
+	
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 570	    var mostVisitedUrls_source = [{
+        title: 'title',
+        url: 'url'
+    }];
+	
+$FilePath$demos/topsites/opgen_generated_files/cs_0.js
+Line 492	    window.postMessage(JSON.stringify(arguments[0]),
+	JSON.stringify(arguments[0])
+
+1670290181.110044----tainted detected!~~~in extension: demos/topsites with window_postMessage_sink
+(['12541', '12598', '12613'], 'topSites_source')
+from topSites_source to window_postMessage_sink
+==========================
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 571	        title: 'title',
+	
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 571	        title: 'title',
+	
+$FilePath$demos/topsites/opgen_generated_files/cs_0.js
+Line 492	    window.postMessage(JSON.stringify(arguments[0]),
+	JSON.stringify(arguments[0])
+
+1670290181.110482----tainted detected!~~~in extension: demos/topsites with window_postMessage_sink
+(['12547', '12596', '12613'], 'topSites_source')
+from topSites_source to window_postMessage_sink
+==========================
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 572	        url: 'url'
+	
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 572	        url: 'url'
+	
+$FilePath$demos/topsites/opgen_generated_files/cs_0.js
+Line 492	    window.postMessage(JSON.stringify(arguments[0]),
+	JSON.stringify(arguments[0])
+
+1670290181.110911----tainted detected!~~~in extension: demos/topsites with window_postMessage_sink
+(['12535', '12592', '12613'], 'topSites_source')
+from topSites_source to window_postMessage_sink
+==========================
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 570	    var mostVisitedUrls_source = [{
+        title: 'title',
+        url: 'url'
+    }];
+	[{        title: 'title',        url: 'url'    }]
+$FilePath$demos/topsites/opgen_generated_files/bg.js
+Line 570	    var mostVisitedUrls_source = [{
+        title: 'title',
+        url: 'url'
+    }];
+	[{        title: 'title',        url: 'url'    }]
+$FilePath$demos/topsites/opgen_generated_files/cs_0.js
+Line 492	    window.postMessage(JSON.stringify(arguments[0]),
+	JSON.stringify(arguments[0])
+
+~~taint detected
+demos/topsites finish within 15.183025121688843 seconds#### with code_cov 20.0% stmt covered####
+

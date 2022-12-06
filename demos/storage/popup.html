@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <title>JamakFlix</title>
+  <link href="css/popup.css" rel="stylesheet" media="screen">
+  <script src="js/jquery-2.1.4.min.js"></script>
+  <script src="js/popup.js"></script>
+</head>
+
+<body>
+  <h1>
+    <img src="img/icon32.png" alt="jamakFlix" /> JamakFlix Options
+  </h1>
+  <table width="100%;">
+    <tr>
+      <th>
+        Language
+      </th>
+      <td>
+        <select id="ddlLanguages" disabled="disabled">
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        Enable
+      </th>
+      <td>
+        <label>
+          <input type="radio" name="enabled" value="always" disabled="disabled"> Always Load on new video
+        </label>
+        <label>
+          <input type="radio" name="enabled" value="ask" disabled="disabled"> Ask to Load on new video
+        </label>
+        <label>
+          <input type="radio" name="enabled" value="disabled" disabled="disabled"> Disable Jamakflix
+        </label>
+      </td>
+    </tr>
+  </table>
+
+  <footer>
+    Powered by
+    <a href="http://jaebae.net">JbDesign Web&Apps</a>
+    <br> and opensubtitles.org
+  </footer>
+</body>
+
+</html>

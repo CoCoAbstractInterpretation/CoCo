@@ -430,3 +430,87 @@ beta: 0
 gamma: 1
 demos/aboihlmnifahajfibplgbmjlhplfmilg_server finish within 4.005947828292847 seconds#### with code_cov 86.44067796610169% stmt covered####
 
+analysis starts
+2022-12-05 20:23:59.770976
+All args:
+print: False
+vul_type: chrome_ext
+prototype_pollution: False
+module: False
+exit: False
+single_branch: False
+run_all: False
+function_timeout: None
+timeout: None
+call_limit: 3
+entry_func: None
+list: None
+install: False
+run_env: ./tmp_env/
+no_file_based: False
+parallel: None
+auto_type: False
+export: None
+nodejs: False
+gc: False
+babel: None
+input_file: demos/download
+chrome_extension: True
+run_with_pq: True
+obj_traceback: False
+dx: False
+easy_test: False
+package_path: demos/
+autostop: False
+no_merge: False
+thread_stmt: False
+all_branch: False
+war: False
+measure_thread: False
+measure_code_cov_progress: False
+time_slice: 0.1
+seq_timeout: 20
+policy: 1
+alpha: 0.2
+beta: 0.8
+gamma: 1
+ablation_mode: CoCo-single
+code_progress_html: False
+1670289840.56435----test_graph starts
+1670289855.464194----tainted detected!~~~in extension: demos/download with chrome_downloads_download_sink
+(['13382', '13395', '13420', '14485'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to chrome_downloads_download_sink
+==========================
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 479	window.addEventListener("message", function(event) {
+	event
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 483		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 483		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/download/opgen_generated_files/bg.js
+Line 995				let fileName = event.fileName;
+	event.fileName
+
+1670289855.465409----tainted detected!~~~in extension: demos/download with chrome_downloads_download_sink
+(['13382', '13395', '13420', '14483'], 'cs_window_eventListener_message')
+from cs_window_eventListener_message to chrome_downloads_download_sink
+==========================
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 479	window.addEventListener("message", function(event) {
+	event
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 483		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/download/opgen_generated_files/cs_0.js
+Line 483		if (!event.data && !event.data.type) {
+	event.data
+$FilePath$demos/download/opgen_generated_files/bg.js
+Line 994				let URL = event.link;
+	event.link
+
+~~taint detected
+demos/download finish within 17.442153215408325 seconds#### with code_cov 10.416666666666666% stmt covered####
+

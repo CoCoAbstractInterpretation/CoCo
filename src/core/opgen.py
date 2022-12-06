@@ -196,7 +196,8 @@ class OPGen:
                     generate_branch_graph(G)
                     generate_obj_graph(G, internal_plugins, entry_nodeid=entry_id)
                     if not (G.thread_version and G.ablation_mode in ["coco-single", "coco"]):
-                        G.mydata_to_graph()
+                        if G.thread_version:
+                            G.mydata_to_graph()
                         G.thread_version = False
                         event_loop_no_threading(G)
             except TimeoutError as err:
@@ -245,7 +246,8 @@ class OPGen:
             generate_branch_graph(G)
             generate_obj_graph(G, internal_plugins, entry_nodeid=entry_id)
             if not (G.thread_version and G.ablation_mode in ["coco-single", "coco"]):
-                G.mydata_to_graph()
+                if G.thread_version:
+                    G.mydata_to_graph()
                 G.thread_version = False
                 event_loop_no_threading(G)
             # except:

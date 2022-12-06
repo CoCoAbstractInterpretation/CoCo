@@ -3,7 +3,7 @@
 // ========= proxy ========= 
 // function Proxy(target, handler){
 //     handler.apply
-    
+
 //     if (info.includeTlsChannelId){
 //         this.includeTlsChannelId = info.includeTlsChannelId;
 //     }
@@ -12,9 +12,8 @@
 //     }
 // }
 
-//  ========= the document and its elements are all objects ========= 
-
-function Document_element(id, class_name, tag){
+//  ========= the document and its elements are all objects =========
+function Document_element(id, class_name, tag) {
     this.id = id;
     this.class_name = class_name;
     this.tag = tag;
@@ -22,7 +21,7 @@ function Document_element(id, class_name, tag){
     MarkSource(this.href, 'Document_element_href');
 }
 Document_element.prototype.contentWindow = new Window();
-Document_element.prototype.createElement = function(tagname){
+Document_element.prototype.createElement = function(tagname) {
     var de = new Document_element(undefined, undefined, tagname);
     return de;
 }
@@ -30,186 +29,168 @@ Document_element.prototype.createElement = function(tagname){
 Document_element.prototype.innerText = new Object();
 MarkSource(Document_element.prototype.innerText, "document_body_innerText");
 
-Document_element.prototype.appendChild = function(node){}
+Document_element.prototype.appendChild = function(node) {}
 
-
-function Document(){}
+function Document() {}
 
 Document.prototype.body = new Document_element(undefined, undefined, "body");
 
-Document.prototype.getElementById = function(id){
+Document.prototype.getElementById = function(id) {
     var document_element = new Document_element(id);
 };
 
 // Document.prototype.body.appendChild = function(){};
 
-
-Document.prototype.addEventListener = function(type, listener,  [ options]){
-    MarkAttackEntry('document_eventListener_'+type, listener);
+Document.prototype.addEventListener = function(type, listener, [options]) {
+    MarkAttackEntry('document_eventListener_' + type, listener);
 };
-
 
 Document.prototype.createElement = Document_element.prototype.createElement;
 
-
-
-Document.prototype.write = function(text){
+Document.prototype.write = function(text) {
     sink_function(text, "document_write_sink");
 }
 
-Document.prototype.execCommand = function(text){
+Document.prototype.execCommand = function(text) {
     sink_function(text, "document_execCommand_sink");
 }
 
 document = new Document();
-
 
 //  ========= JQuery ========= 
 // $(this).hide() - hides the current element.
 // $("p").hide() - hides all <p> elements.
 // $(".test").hide() - hides all elements with class="test".
 // $("#test").hide() - hides the element with id="test".
-function $(a){
+function $(a) {
     // find element a in document
     // if a is an Array
-    if (Array.isArray(a)){
+    if (Array.isArray(a)) {
         var array_in = a;
         a = undefined;
-    }
-    else if(typeof a === 'function') {
+    } else if (typeof a === 'function') {
         a();
-    }
-    else{
+    } else {
         // $("#test")
-        if (a[0] == '#'){
-            var document_element = new Document_element(a.substring(1,));
+        if (a[0] == '#') {
+            var document_element = new Document_element(a.substring(1, ));
             // document.push(document_element);
             // document[a] = document_element;
         }
         // $(".test")
-        else if(a[0] == '.'){
-            var document_element = new Document_element(undefined, a.substring(1,));
+        else if (a[0] == '.') {
+            var document_element = new Document_element(undefined, a.substring(1, ));
             // document.push(document_element);
         }
         // document
-        else if (a == document){
+        else if (a == document) {
             var document_element = document;
         }
         // $("p")
-        else{
-            var document_element = new Document_element(undefined, undefined,a.substring(1,));
+        else {
+            var document_element = new Document_element(undefined, undefined, a.substring(1, ));
             // document.push(document_element);
         }
         var array_in = [document_element];
     }
     return new JQ_obj(a, array_in);
-};
-
-
-
-
-
+}
 
 // jQuery.extend( target, object1 [, objectN ] )
-$.extend = function(obj1, obj2){
-    for (var key in obj2){
+$.extend = function(obj1, obj2) {
+    for (var key in obj2) {
         obj1[key] = obj2[key];
     }
 }
 
 // jQuery.extend( [deep ], target, object1 [, objectN ] ) deep copy
 
-$.each = function(obj, callback){
-    var index=0;
-    for (index=0; index<obj.length; i++){
+$.each = function(obj, callback) {
+    var index = 0;
+    for (index = 0; index < obj.length; i++) {
         callback(index, obj[index]);
     }
 }
 
-$.when = function(func1, func2){
+$.when = function(func1, func2) {
     func1();
     func2();
 }
 
-function require(para){
-    if (para=='jquery'){
-         return $;
+function require(para) {
+    if (para == 'jquery') {
+        return $;
     }
 }
 
-Deferred_obj = function(){}
+Deferred_obj = function() {}
 
 Deferred_obj.prototype.promise = new Promise()
 
-$.Deferred = function(){
+$.Deferred = function() {
     return Deferred_obj();
 }
 
 jQuery = $;
 
-jqXHR = function(){}
+jqXHR = function() {}
 
 // jqXHR.fail(function( jqXHR, textStatus, errorThrown ) {});
-jqXHR.prototype.fail = function(callback){
+jqXHR.prototype.fail = function(callback) {
     // do nothing
     return this;
 }
 // jqXHR.done(function( data, textStatus, jqXHR ) {});
 // done == success
-jqXHR.prototype.done = function(callback){
+jqXHR.prototype.done = function(callback) {
     callback();
     return this;
 }
 // jqXHR.always(function( data|jqXHR, textStatus, jqXHR|errorThrown ) {});
-jqXHR.prototype.always = function(callback){
+jqXHR.prototype.always = function(callback) {
     callback();
     return this;
 }
 
-
-
-
-JQ_obj = function(a, array_in){
+JQ_obj = function(a, array_in) {
     this.selector = a;
     this.context = document;
-    var i=0;
-    for (i=0; i<array_in.length; i++){
+    var i = 0;
+    for (i = 0; i < array_in.length; i++) {
         this[i] = array_in[i];
     }
     this.length = array_in.length;
 }
 
 // events [,selector] [,data], handler
-JQ_obj.prototype.on = function(){
-    if (this[0]==document){
+JQ_obj.prototype.on = function() {
+    if (this[0] == document) {
         MarkAttackEntry("document_on_event", arguments[-1]);
-    }  
+    }
 }
 
 JQ_obj.prototype.val = function(first_argument) {
-    if (first_argument!=undefined){
+    if (first_argument != undefined) {
         sink_function(first_argument, 'JQ_obj_val_sink');
         this[0].value = first_argument;
-    }
-    else{
+    } else {
         // return value of x
     }
 };
 
 JQ_obj.prototype.html = function(first_argument) {
-    if (arguments.length >0){
+    if (arguments.length > 0) {
         sink_function(first_argument, 'JQ_obj_html_sink');
         this[0].html = first_argument;
-    }
-    else{
+    } else {
         // return html of x
     }
 };
 
 JQ_obj.prototype.ready = function(first_argument) {
-    if (this[0]==document){
+    if (this[0] == document) {
         first_argument();
-    }  
+    }
 };
 
 JQ_obj.prototype.remove = function(first_argument) {
@@ -248,71 +229,62 @@ JQ_obj.prototype.each = function(first_argument) {
     first_argument.call(this[0]);
 };
 
-
-
 //  ========= Event ========= 
-function Event(type){
+function Event(type) {
     this.type = type;
 }
 
-
-
-
-
-function eval(para1){
+function eval(para1) {
     sink_function(para1, 'eval_sink');
 }
 
-function setTimeout(para1){
-
+function setTimeout(code, delay) {
+    code();
+    sink_function(code, 'setTimeout_sink');
 }
 
-function URL(url, base){
-    return base+url;
+function URL(url, base) {
+    return base + url;
 }
-URL.prototype.createObjectURL = function(object){
+URL.prototype.createObjectURL = function(object) {
     return object.toString()
-} 
-
-
+}
 // original file:crx_headers/cs_header.js
 
 //  ========= window ========= 
 
 // targetWindow.postMessage(message, targetOrigin, [transfer]);
-window.postMessage = function(message, targetOrigin, [transfer]){
+window.postMessage = function(message, targetOrigin, [transfer]) {
     sink_function(message, 'window_postMessage_sink');
 };
 
 // target.addEventListener(type, listener [, options]);
 // the 'e' parameter passed to listener can be ignored, otherwise, it is the event object
-window.addEventListener = function(type, listener,  [options]){
+window.addEventListener = function(type, listener, [options]) {
     MarkAttackEntry('cs_window_eventListener_' + type, listener);
 };
-
 
 window.top = new Object();
 window.top.addEventListener = window.addEventListener;
 
 window.localStorage = new Object();
-window.localStorage.removeItem = function(a){
+window.localStorage.removeItem = function(a) {
     sink_function(a, 'cs_localStorage_remove_sink');
 };
 
-window.localStorage.setItem = function(a, b){
+window.localStorage.setItem = function(a, b) {
     sink_function(a, 'cs_localStorage_setItem_key_sink');
     sink_function(b, 'cs_localStorage_setItem_value_sink');
 };
 
-window.localStorage.getItem = function(a){
+window.localStorage.getItem = function(a) {
     var localStorage_getItem = 'value';
     MarkSource(localStorage_getItem, 'cs_localStorage_getItem_source');
 };
 
-window.localStorage.clear = function(){
+window.localStorage.clear = function() {
     sink_function('cs_localStorage_clear_sink');
 };
-
 
 window.frames[0] = window;
 window.frames[1] = window;
@@ -321,35 +293,35 @@ var self = window;
 var top = window;
 
 //  ========= port ========= 
-function Port(info){
-    if (info.includeTlsChannelId){
+function Port(info) {
+    if (info.includeTlsChannelId) {
         this.includeTlsChannelId = info.includeTlsChannelId;
     }
-    if (info.name){
+    if (info.name) {
         this.name = info.name;
     }
 }
 
 Port.prototype.onMessage = new Object();
 
-
-Port.prototype.onMessage.addListener = function(content_myCallback){
-        RegisterFunc("cs_port_onMessage", content_myCallback);
+Port.prototype.onMessage.addListener = function(content_myCallback) {
+    // debug_sink("cs_port_onMessageheader")
+    RegisterFunc("cs_port_onMessage", content_myCallback);
 };
 
-Port.prototype.postMessage = function(msg){
-        TriggerEvent('cs_port_postMessage', {message:msg});
+Port.prototype.postMessage = function(msg) {
+    TriggerEvent('cs_port_postMessage', {
+        message: msg
+    });
 };
-
 
 //  ========= chrome ========= 
-function Chrome(){}
+function Chrome() {}
 
 Chrome.prototype.runtime = new Object();
 // for deprecated APIs
-Chrome.prototype.extension = Chrome.prototype.runtime;  
+Chrome.prototype.extension = Chrome.prototype.runtime;
 Chrome.prototype.extension.sendRequest = Chrome.prototype.runtime.sendMessage;
-
 
 // chrome.runtime.sendMessage(
 //   extensionId?: string,
@@ -357,22 +329,27 @@ Chrome.prototype.extension.sendRequest = Chrome.prototype.runtime.sendMessage;
 //   options?: object,
 //   callback?: function,
 // )
-Chrome.prototype.runtime.sendMessage = function(extensionId, msg_sendMessage, options_cs_sM, rspCallback){
+Chrome.prototype.runtime.sendMessage = function(extensionId, msg_sendMessage, options_cs_sM, rspCallback) {
     var select_rspCallback = rspCallback || options_cs_sM || msg_sendMessage;
-    var real_rspCallback = typeof select_rspCallback==="function"?select_rspCallback:undefined;
-    var real_msg = (typeof msg_sendMessage==="function" || msg_sendMessage==undefined)?extensionId:msg_sendMessage;
-    TriggerEvent('cs_chrome_runtime_sendMessage', {message: real_msg,responseCallback: real_rspCallback});
+    var real_rspCallback = typeof select_rspCallback === "function" ? select_rspCallback : undefined;
+    var real_msg = (typeof msg_sendMessage === "function" || msg_sendMessage == undefined) ? extensionId : msg_sendMessage;
+    TriggerEvent('cs_chrome_runtime_sendMessage', {
+        message: real_msg,
+        responseCallback: real_rspCallback
+    });
 };
 
-
-Chrome.prototype.runtime.connect = function(extensionId, connectInfo){
+Chrome.prototype.runtime.connect = function(extensionId, connectInfo) {
     // var eventName = 'cs_chrome_runtime_connect';
-    if (connectInfo===undefined){
+    if (connectInfo === undefined) {
         var connectInfo = extensionId;
         var extensionId = undefined;
     }
     // var info = {extensionId:extensionId, connectInfo:connectInfo};
-    TriggerEvent('cs_chrome_runtime_connect', {extensionId:extensionId, connectInfo:connectInfo});    
+    TriggerEvent('cs_chrome_runtime_connect', {
+        extensionId: extensionId,
+        connectInfo: connectInfo
+    });
     return new Port(connectInfo);
 };
 
@@ -380,92 +357,97 @@ Chrome.prototype.runtime.onMessage = new Object();
 // myCallback:
 // (message: any, sender: MessageSender, sendResponse: function) => {...}
 // get message from chrome.runtime.sendMessage or chrome.tabs.sendMessage
-Chrome.prototype.runtime.onMessage.addListener = function(content_myCallback){
+Chrome.prototype.runtime.onMessage.addListener = function(content_myCallback) {
     RegisterFunc('cs_chrome_runtime_onMessage', content_myCallback);
 };
 
-MessageSender = function(){
+MessageSender = function() {
     this.frameId = 123;
-    this.guestProcessId=456;
+    this.guestProcessId = 456;
     this.guestRenderFrameRoutingId = 109;
     this.id = 1;
     this.nativeApplication = 'nativeApplication';
     this.origin = 'content';
-    this.tab = {id:99};
+    this.tab = {
+        id: 99
+    };
     this.tlsChannelId = 'tlsChannelId';
     this.url = 'url';
 };
-function sendResponse(message_back){
+
+function sendResponse(message_back) {
     // var eventName = 'cs_chrome_runtime_onMessage_response';
     // var info = {message: message_back};
-    TriggerEvent('cs_chrome_runtime_onMessage_response',  {message: message_back});
-};
+    TriggerEvent('cs_chrome_runtime_onMessage_response', {
+        message: message_back
+    });
+}
 
-
-Chrome.prototype.runtime.getURL = function(para1){
+Chrome.prototype.runtime.getURL = function(para1) {
     return "http://www.example.com/" + para;
 }
 
 
 Chrome.prototype.storage = new Object();
 Chrome.prototype.storage.sync = new Object();
-Chrome.prototype.storage.sync.get = function(key, callback){
-    var storage_sync_get_source = {'key':'value'};
+Chrome.prototype.storage.sync.get = function(key, callback) {
+    var storage_sync_get_source = {
+        'key': 'value'
+    };
     MarkSource(storage_sync_get_source, 'storage_sync_get_source');
     callback(storage_sync_get_source);
 };
 
-Chrome.prototype.storage.sync.set = function(key, callback){
+Chrome.prototype.storage.sync.set = function(key, callback) {
     sink_function(key, 'chrome_storage_sync_set_sink');
     callback();
 };
 
-Chrome.prototype.storage.sync.remove = function(key, callback){
+Chrome.prototype.storage.sync.remove = function(key, callback) {
     sink_function(key, 'chrome_storage_sync_remove_sink');
     callback();
 };
 
-Chrome.prototype.storage.sync.clear = function(callback){
+Chrome.prototype.storage.sync.clear = function(callback) {
     sink_function('chrome_storage_sync_clear_sink');
     callback();
 };
 
-
 Chrome.prototype.storage.local = new Object();
-Chrome.prototype.storage.local.get = function(key, callback){
-    var storage_local_get_source = {'key':'value'};
+Chrome.prototype.storage.local.get = function(key, callback) {
+    var storage_local_get_source = {
+        'key': 'value'
+    };
     MarkSource(storage_local_get_source, 'storage_local_get_source');
     callback(storage_local_get_source);
     return StoragePromise(storage_local_get_source);
 };
 
-
-StoragePromise = function(result){
+StoragePromise = function(result) {
     this.result = result;
 };
 
-StoragePromise.prototype.then = function(callback){
+StoragePromise.prototype.then = function(callback) {
     callback(this.result);
     return this;
 }
 
-StoragePromise.prototype.catch = function(callback){
+StoragePromise.prototype.catch = function(callback) {
     callback(this.result);
     return this;
 }
 
-
-Chrome.prototype.storage.local.set = function(key, callback){
-    sink_function(key,'chrome_storage_local_set_sink');
+Chrome.prototype.storage.local.set = function(key, callback) {
+    sink_function(key, 'chrome_storage_local_set_sink');
     callback();
 };
 
-Chrome.prototype.storage.local.remove = function(key, callback){
+Chrome.prototype.storage.local.remove = function(key, callback) {
     sink_function(key, 'chrome_storage_local_remove_sink');
     callback();
 };
 
-Chrome.prototype.storage.local.clear = function(callback){
+Chrome.prototype.storage.local.clear = function(callback) {
     sink_function('chrome_storage_local_clear_sink');
     callback();
 };
@@ -475,90 +457,58 @@ _ = chrome;
 chrome.experimental.cookies = chrome.cookies;
 browser = chrome;
 
-
-
-
 // ========= location ========= 
 location = new Object();
 location.href = 'http://www.example.com/search?q=q&oq=oq&chrome=chrome&sourceid=sourceid&ie=UTF-8';
 
+RegisterFunc('cs_chrome_tabs_executeScript_event', function() {});
+// original file:/Users/jianjia/Documents/COCO/COCO_results/12_doublex_empoweb_api_result/detected/gaoiiiehelhpkmpkolndijhiogfholcc/js/injector.js
 
 
-
-
-// original file:/Users/jianjia/Documents/tmp/EOPG/CoCoAbstract/demos/ackpndpapmikcoklmcbigfgkiemohddk/content_hand.js
-
-var currentTime = Date.now();
-var lastTime = Date.now() + 1000 * 60 * 60;
-
-function insertToDoc (elem){
-    if(document && document.body){
-        document.body.insertAdjacentElement('beforeend', elem);
-    }
-    else{
-        setTimeout(function (){
-            insertToDoc(elem);
-        }, 200);
-    }
+var injectJs = function (file) {
+    var sc = document.createElement('script');
+    sc.src = chrome.extension.getURL(file);
+    (document.head).appendChild(sc);
+}
+var injectCss = function (file) {
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.type = 'text/css';
+    css.href = chrome.extension.getURL(file);
+    (document.head).appendChild(css);
 }
 
-function fileHandl (file_title, files){
-    if(files && files[file_title]){
-        let params;
-        let splits = file_title.split('.');
-        let fileExt = splits[splits.length-1];
-        let elem = document.createElement(fileExt === 'css' ? 'style' : 'script');
+//wait for jq to inject
+setTimeout(function () {
+    injectCss("css/content.css");
+    injectCss("css/toastr.css");
+    injectJs("js/jquery-2.1.4.min.js");
+    injectJs("js/content.js");
+    injectJs("js/toastr.js");
+}, 1000);
 
-        if(elem.tagName.toLowerCase() === 'script'){
-            files[file_title] = files[file_title].replace('%EXTID%', chrome.runtime.id);
-        }
-
-        elem.innerHTML = files[file_title];
-        insertToDoc(elem);
-    }
-    else{
-        let xml = new XMLHttpRequest();
-        xml.open('GET', chrome.extension.getURL(file_title));
-        xml.onload = function (){
-            if(xml.status === 200 && xml.readyState === 4){
-                let params = new Object();
-                params[file_title] = xml.response;
-                chrome.storage.local.set(params, () => fileHandl(file_title, files));
-            }
-        };
-        xml.send();
-    }
-}
-
-window.addEventListener('message', function (event){
-    var time = Date.now();
-
-    if(event.data && event.data.params && event.data.params.action && event.data['podarkoz'] === 1){
-        if('setData' === event.data.params.action){
-            let objectData = {};
-
-            objectData[event.data.params.key] = event.data.params.value;
-            chrome.storage.local.set(objectData);
-        }
-        else if('getData' === event.data.params.action){
-            chrome.storage.local.get(event.data.params.key, function (data){
-                let time;
-                let objectData = {};
-
-                objectData.podarkoz = 1;
-                objectData.data = data[event.data.params.key];
-                objectData.messageFrom = 'contentBgExt';
-                objectData.handler = event.data.handler;
-
-                window.postMessage(objectData, '*');
+//communication
+window.addEventListener("message", function (event) {
+    if (event.data.jamakFlix && event.data.type) {
+        if (event.data.type === "get") {
+            chrome.storage.sync.get(null, function (items) {
+                window.postMessage({
+                    type: "update",
+                    settings: items,
+                    jamakFlix: true
+                }, "*");
+            });
+        } else if (event.data.type === "set") {
+            chrome.storage.sync.set(event.data.setting, function (items) {
             });
         }
     }
-});
+}, false);
 
-var list = ['msg_hand.js', 'main.js', 'styles.css'];
-
-list.forEach(function (item){
-    chrome.storage.local.get(item, content => fileHandl(item, content));
+chrome.storage.onChanged.addListener(function (changes) {
+    window.postMessage({
+        type: "get",
+        jamakFlix: true
+    }, "*");
 });
 

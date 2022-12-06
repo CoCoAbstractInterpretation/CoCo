@@ -8,3 +8,4 @@ tools/.DS_Store
 *.log
 .idea/
 *.pyc
+node_modules/
